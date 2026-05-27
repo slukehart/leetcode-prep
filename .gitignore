@@ -25,3 +25,5 @@ logs
 
 # Per-user local progress data (never commit personal tracking data)
 server/data/progress.json
+.gstack/
+.claude/
