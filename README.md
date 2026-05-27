@@ -3,15 +3,101 @@
 A local, single-user study tracker for LeetCode interview prep — patterns, a study
 path, and a problem/mistake log. Built with Nuxt 4 + Vuetify 3.
 
-## Setup
+## Prerequisites
+
+You need **Node.js** (which includes `npm`). Nuxt 4 requires Node `20.19+` or `22.12+`
+— the latest LTS is recommended.
+
+- Don't have it? Install from **https://nodejs.org/** (the LTS installer bundles npm),
+  or use a version manager like [nvm](https://github.com/nvm-sh/nvm) /
+  [fnm](https://github.com/Schniz/fnm).
+- Verify your install:
 
 ```bash
-cd tracker
-npm install
-npm run dev
+node -v   # should print v20.19+ or v22.12+
+npm -v
 ```
 
-Open http://localhost:3000.
+## Get the code
+
+```bash
+git clone git@github.com:slukehart/leetcode-prep.git
+cd leetcode-prep
+```
+
+## Setup
+
+Install dependencies:
+
+```bash
+# npm
+npm install
+
+# pnpm
+pnpm install
+
+# yarn
+yarn install
+
+# bun
+bun install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# npm
+npm run dev
+
+# pnpm
+pnpm dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm build
+
+# yarn
+yarn build
+
+# bun
+bun run build
+```
+
+Locally preview the production build:
+
+```bash
+# npm
+npm run preview
+
+# pnpm
+pnpm preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
+```
+
+Check out the [Nuxt deployment docs](https://nuxt.com/docs/getting-started/deployment)
+and the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) for
+more information.
 
 ## Your data is local and private
 
