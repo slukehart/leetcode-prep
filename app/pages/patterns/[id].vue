@@ -14,6 +14,16 @@ const current = computed<PatternStatus>(() =>
 function onStatusChange(value: unknown) {
   if (pattern.value && value) setPatternStatus(pattern.value.id, value as PatternStatus)
 }
+
+// Lazy-load trace component by pattern id — resolves to null if no trace exists yet
+const traceComponent = computed(() => {
+  if (!pattern.value) return null
+  return defineAsyncComponent({
+    loader: () => import(`../../components/pattern/traces/${pattern.value!.id}.vue`),
+    errorComponent: { template: '<span />' },
+    onError: () => {},
+  })
+})
 </script>
 
 <template>
@@ -35,6 +45,23 @@ function onStatusChange(value: unknown) {
       </v-btn-toggle>
     </div>
 
+    <!-- Intuition -->
+    <PatternIntuition v-if="pattern.intuition" :text="pattern.intuition" />
+
+    <!-- Worked Example -->
+    <PatternWorkedExample v-if="pattern.workedExample" :example="pattern.workedExample" />
+
+    <!-- Interactive Trace -->
+    <component :is="traceComponent" v-if="traceComponent" />
+
+    <!-- JS Skeleton -->
+    <div class="section-label mb-2">JS skeleton</div>
+    <CodeBlock :code="pattern.jsSkeleton" class="mb-4" />
+
+    <!-- Complexity -->
+    <PatternComplexity v-if="pattern.complexity" :complexity="pattern.complexity" />
+
+    <!-- Triggers -->
     <v-card variant="elevated" elevation="2" class="mb-4">
       <v-card-text>
         <div class="section-label mb-2">Triggers</div>
@@ -45,6 +72,7 @@ function onStatusChange(value: unknown) {
       </v-card-text>
     </v-card>
 
+    <!-- Invariant -->
     <v-card variant="elevated" elevation="2" class="mb-4">
       <v-card-text>
         <div class="section-label mb-2">Invariant</div>
@@ -52,9 +80,7 @@ function onStatusChange(value: unknown) {
       </v-card-text>
     </v-card>
 
-    <div class="section-label mb-2">JS skeleton</div>
-    <CodeBlock :code="pattern.jsSkeleton" class="mb-4" />
-
+    <!-- Failure Modes -->
     <v-card variant="elevated" elevation="2" class="mb-4">
       <v-card-text>
         <div class="section-label mb-2">Failure modes</div>
@@ -65,6 +91,10 @@ function onStatusChange(value: unknown) {
       </v-card-text>
     </v-card>
 
+    <!-- When Not To Use -->
+    <PatternWhenNotToUse v-if="pattern.whenNotToUse" :items="pattern.whenNotToUse" />
+
+    <!-- Contrast Cases -->
     <v-card variant="elevated" elevation="2">
       <v-card-text>
         <div class="section-label mb-2">Contrast cases</div>
