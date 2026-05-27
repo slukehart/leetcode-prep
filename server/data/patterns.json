@@ -19,7 +19,11 @@
       "Two Sum II: input is already sorted, so two pointers are valid.",
       "3Sum: sort + fixed anchor + two pointers is better because output is values/triplets, not original indices."
     ],
-    "relatedProblems": ["two-sum"]
+    "relatedProblems": ["two-sum"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "frequency-map",
@@ -41,7 +45,27 @@
       "Contains Duplicate: pure existence check — a Set is enough; no counts needed.",
       "Group Anagrams: need the frequency as a canonical key, not just a count comparison."
     ],
-    "relatedProblems": ["valid-anagram"]
+    "relatedProblems": ["valid-anagram"],
+    "intuition": "A frequency map answers one question: how many times did each value appear? The key insight is that two strings are anagrams if and only if they have identical frequency distributions — \"anagram\" and \"nagaram\" both produce {a:3, g:1, n:1, r:1, m:1}.\n\nThe trick that makes this O(n) instead of O(n²) is that counting is a one-pass operation. You iterate s once to build the counts, then iterate t once to cancel them out. If every count returns to zero, the distributions matched exactly.\n\nWhen the key space is small and fixed (26 lowercase letters), you can use a plain array of size 26 instead of a Map — count[c.charCodeAt(0) - 'a'.charCodeAt(0)] — which is faster in practice because array access is cache-friendly and avoids hash computation.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)",
+      "explanation": "Two linear passes over strings of length n. Space is O(1) because the count array is always size 26 regardless of input size — it is bounded by the alphabet, not the input."
+    },
+    "workedExample": {
+      "input": "s = \"anagram\", t = \"nagaram\"",
+      "steps": [
+        "Early exit: both strings have length 7. Continue.",
+        "Pass 1 — count s: a→3, n→1, g→1, r→1, m→1. All other buckets stay 0.",
+        "Pass 2 — subtract t (n,a,g,a,r,a,m): n→0, a→2→1→0, g→0, r→0, m→0.",
+        "Final check: every bucket is 0. Return true — anagram confirmed."
+      ]
+    },
+    "whenNotToUse": [
+      "Pure existence check (has anything repeated?) — a Set is enough; no counts needed. See: Contains Duplicate.",
+      "You need to group many strings by equivalence — use Canonical Key Grouping; the frequency array becomes the canonical key.",
+      "Unicode or multi-byte input — a fixed 26-slot array breaks. Use a Map keyed on the full character instead."
+    ]
   },
   {
     "id": "two-pointers",
@@ -63,7 +87,11 @@
       "Two Sum: input is unsorted and you need original indices — use hash map instead.",
       "Valid Palindrome: not sorted but still uses opposite-end convergence; non-alphanumeric skip complicates the loop."
     ],
-    "relatedProblems": ["valid-palindrome", "two-sum-ii-input-array-is-sorted", "3sum"]
+    "relatedProblems": ["valid-palindrome", "two-sum-ii-input-array-is-sorted", "3sum"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "sliding-window",
@@ -89,7 +117,11 @@
       "longest-substring-without-repeating-characters",
       "best-time-to-buy-and-sell-stock",
       "longest-repeating-character-replacement"
-    ]
+    ],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "bfs-queue",
@@ -111,7 +143,11 @@
       "DFS: explores one branch fully before backtracking — does not guarantee shortest path.",
       "Level Order Traversal: snapshot queue length at start of each level to group nodes."
     ],
-    "relatedProblems": ["binary-tree-level-order-traversal"]
+    "relatedProblems": ["binary-tree-level-order-traversal"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "dfs-cycle-detection",
@@ -133,7 +169,11 @@
       "BFS for cycle detection: works for undirected graphs but not directed.",
       "Topological sort (Kahn's): BFS-based alternative using in-degree counts."
     ],
-    "relatedProblems": ["course-schedule"]
+    "relatedProblems": ["course-schedule"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "set-membership",
@@ -154,7 +194,11 @@
       "Frequency Map: use when counts matter, not just presence.",
       "Hash Map Complement: use when you need to find a matching pair, not just any duplicate."
     ],
-    "relatedProblems": ["contains-duplicate"]
+    "relatedProblems": ["contains-duplicate"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "canonical-key-grouping",
@@ -175,7 +219,11 @@
       "Frequency Map: compares two strings directly; Canonical Key Grouping groups many strings.",
       "Set Membership: checks existence; Canonical Key Grouping produces grouped output."
     ],
-    "relatedProblems": ["group-anagrams"]
+    "relatedProblems": ["group-anagrams"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "stack-matching",
@@ -197,7 +245,11 @@
       "BFS Queue: FIFO; use for level-order traversal, not matching.",
       "Min Stack: augmented stack for O(1) min queries — different from matching."
     ],
-    "relatedProblems": ["valid-parentheses", "min-stack"]
+    "relatedProblems": ["valid-parentheses", "min-stack"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "tree-dfs",
@@ -224,7 +276,11 @@
       "invert-binary-tree",
       "same-tree",
       "validate-binary-search-tree"
-    ]
+    ],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "grid-flood-fill",
@@ -246,7 +302,11 @@
       "Clone Graph: graph nodes, not grid cells — use adjacency list + visited map.",
       "Tree DFS: tree has no cycles; grid may have 4-directional neighbors."
     ],
-    "relatedProblems": ["number-of-islands"]
+    "relatedProblems": ["number-of-islands"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "prefix-suffix-products",
@@ -267,7 +327,11 @@
       "Running sum / prefix sum: for addition instead of multiplication.",
       "Sliding window: for contiguous subarray problems, not element-exclusion products."
     ],
-    "relatedProblems": ["product-of-array-except-self"]
+    "relatedProblems": ["product-of-array-except-self"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "heap-top-k",
@@ -292,7 +356,11 @@
       "top-k-frequent-elements",
       "k-closest-points-to-origin",
       "kth-largest-element-in-an-array"
-    ]
+    ],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "backtracking",
@@ -314,7 +382,11 @@
       "DP: memoize overlapping subproblems; backtracking enumerates all solutions.",
       "BFS: explores by distance; backtracking explores by decision depth."
     ],
-    "relatedProblems": ["subsets", "combination-sum"]
+    "relatedProblems": ["subsets", "combination-sum"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "dp-1d",
@@ -341,7 +413,11 @@
       "house-robber",
       "coin-change",
       "maximum-subarray"
-    ]
+    ],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "binary-search",
@@ -367,7 +443,11 @@
       "search-in-rotated-sorted-array",
       "find-minimum-in-rotated-sorted-array",
       "koko-eating-bananas"
-    ]
+    ],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "linked-list-traversal",
@@ -393,7 +473,11 @@
       "reverse-linked-list",
       "merge-two-sorted-lists",
       "reorder-list"
-    ]
+    ],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   },
   {
     "id": "graph-traversal",
@@ -414,6 +498,10 @@
       "Grid Flood Fill: cells in a grid; Graph Traversal: nodes with arbitrary adjacency.",
       "DFS Cycle Detection: directed graph + three-color state; Graph Traversal: undirected reachability."
     ],
-    "relatedProblems": ["clone-graph"]
+    "relatedProblems": ["clone-graph"],
+    "intuition": "",
+    "complexity": null,
+    "workedExample": null,
+    "whenNotToUse": []
   }
 ]
