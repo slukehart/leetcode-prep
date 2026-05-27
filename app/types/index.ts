@@ -1,6 +1,17 @@
 export type PatternStatus = 'to-learn' | 'learning' | 'learned'
 export type AttemptResult = 'solved' | 'stuck' | 'failed'
 
+export interface PatternComplexity {
+  time: string
+  space: string
+  explanation: string
+}
+
+export interface PatternWorkedExample {
+  input: string
+  steps: string[]
+}
+
 export interface Pattern {
   id: string
   name: string
@@ -11,6 +22,11 @@ export interface Pattern {
   failureModes: string[]
   contrastCases: string[]
   relatedProblems: string[] // problem ids
+  // New optional fields — patterns without content still type-check
+  intuition?: string
+  complexity?: PatternComplexity
+  workedExample?: PatternWorkedExample
+  whenNotToUse?: string[]
 }
 
 export interface Problem {
