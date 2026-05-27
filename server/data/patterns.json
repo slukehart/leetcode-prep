@@ -1,0 +1,419 @@
+[
+  {
+    "id": "hash-map-complement",
+    "name": "Hash Map Complement Lookup",
+    "triggers": [
+      "Need to find whether a matching value was seen before.",
+      "Input is unsorted or sorting would destroy required output info.",
+      "Need original indices or prior values."
+    ],
+    "whatItGives": "O(1) average lookup for complements.",
+    "invariant": "map[value] = index of a value already seen.",
+    "jsSkeleton": "function twoSum(nums, target) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const need = target - nums[i];\n    if (seen.has(need)) return [seen.get(need), i];\n    seen.set(nums[i], i);\n  }\n  return [-1, -1];\n}",
+    "failureModes": [
+      "Sorting when original indices matter.",
+      "Adding current value before checking complement and accidentally using the same element twice.",
+      "Using a plain object instead of Map when keys could be numeric or collide with object prototype."
+    ],
+    "contrastCases": [
+      "Two Sum II: input is already sorted, so two pointers are valid.",
+      "3Sum: sort + fixed anchor + two pointers is better because output is values/triplets, not original indices."
+    ],
+    "relatedProblems": ["two-sum"]
+  },
+  {
+    "id": "frequency-map",
+    "name": "Frequency Map / Count Array",
+    "triggers": [
+      "Need counts of values or characters.",
+      "Need to compare multiplicity, not just existence.",
+      "Key space may be fixed, like lowercase English letters."
+    ],
+    "whatItGives": "Efficient counting and comparison.",
+    "invariant": "count[x] = number of unmatched occurrences of x.",
+    "jsSkeleton": "function isAnagram(s, t) {\n  if (s.length !== t.length) return false;\n  const count = new Array(26).fill(0);\n  const a = 'a'.charCodeAt(0);\n  for (const c of s) count[c.charCodeAt(0) - a]++;\n  for (const c of t) count[c.charCodeAt(0) - a]--;\n  return count.every(n => n === 0);\n}",
+    "failureModes": [
+      "Using a Set when duplicates/counts matter.",
+      "Assuming alphabet size without checking constraints.",
+      "Using a plain object as a frequency map and hitting prototype-key collisions on unusual inputs."
+    ],
+    "contrastCases": [
+      "Contains Duplicate: pure existence check — a Set is enough; no counts needed.",
+      "Group Anagrams: need the frequency as a canonical key, not just a count comparison."
+    ],
+    "relatedProblems": ["valid-anagram"]
+  },
+  {
+    "id": "two-pointers",
+    "name": "Two Pointers on Sorted Input",
+    "triggers": [
+      "Input is sorted, or sorting is allowed.",
+      "Need pair/triplet relation like sum.",
+      "Moving one pointer has a monotonic effect."
+    ],
+    "whatItGives": "O(n) scan after sorting or on already sorted input.",
+    "invariant": "Current search space is between left and right. If sum is too small, move left. If sum is too large, move right.",
+    "jsSkeleton": "function twoSumII(nums, target) {\n  let left = 0;\n  let right = nums.length - 1;\n  while (left < right) {\n    const sum = nums[left] + nums[right];\n    if (sum === target) return [left + 1, right + 1]; // 1-indexed\n    else if (sum < target) left++;\n    else right--;\n  }\n  return [-1, -1];\n}",
+    "failureModes": [
+      "Using two pointers on unsorted input without monotonicity.",
+      "Sorting when original indices matter.",
+      "Incorrect duplicate skipping in 3Sum."
+    ],
+    "contrastCases": [
+      "Two Sum: input is unsorted and you need original indices — use hash map instead.",
+      "Valid Palindrome: not sorted but still uses opposite-end convergence; non-alphanumeric skip complicates the loop."
+    ],
+    "relatedProblems": ["valid-palindrome", "two-sum-ii-input-array-is-sorted", "3sum"]
+  },
+  {
+    "id": "sliding-window",
+    "name": "Sliding Window",
+    "triggers": [
+      "Need best/valid contiguous subarray or substring.",
+      "Window validity can be updated incrementally.",
+      "Moving left can restore validity."
+    ],
+    "whatItGives": "Usually O(n) because each pointer moves at most n times.",
+    "invariant": "The current window satisfies the validity condition before updating answer.",
+    "jsSkeleton": "function lengthOfLongestSubstring(s) {\n  let left = 0;\n  let best = 0;\n  const freq = new Map();\n\n  for (let right = 0; right < s.length; right++) {\n    const c = s[right];\n    freq.set(c, (freq.get(c) ?? 0) + 1);\n\n    while (freq.get(c) > 1) {\n      const remove = s[left];\n      freq.set(remove, freq.get(remove) - 1);\n      if (freq.get(remove) === 0) freq.delete(remove);\n      left++;\n    }\n\n    best = Math.max(best, right - left + 1);\n  }\n\n  return best;\n}",
+    "failureModes": [
+      "Updating answer before restoring validity.",
+      "Forgetting why nested while is still O(n): each pointer only moves forward.",
+      "Using final window state instead of global best."
+    ],
+    "contrastCases": [
+      "Best Time to Buy and Sell Stock: single-pass greedy with implicit window — no explicit left/right shrink needed.",
+      "Frequency Map: counts chars but doesn't maintain a window boundary."
+    ],
+    "relatedProblems": [
+      "longest-substring-without-repeating-characters",
+      "best-time-to-buy-and-sell-stock",
+      "longest-repeating-character-replacement"
+    ]
+  },
+  {
+    "id": "bfs-queue",
+    "name": "BFS Queue",
+    "triggers": [
+      "Need shortest path in unweighted graph.",
+      "Need level order traversal.",
+      "Need to process nodes by distance/layers."
+    ],
+    "whatItGives": "Processes nodes in breadth-first order; guarantees shortest path in unweighted graphs.",
+    "invariant": "Queue contains discovered nodes whose neighbors have not been processed yet. Mark visited when enqueuing, not when dequeuing.",
+    "jsSkeleton": "function bfs(start, adj, n) {\n  const visited = new Array(n).fill(false);\n  const queue = [start];\n  visited[start] = true;\n\n  while (queue.length > 0) {\n    const node = queue.shift();\n\n    for (const nei of adj[node]) {\n      if (!visited[nei]) {\n        visited[nei] = true;\n        queue.push(nei);\n      }\n    }\n  }\n}",
+    "failureModes": [
+      "Marking visited on dequeue, allowing duplicate queue entries.",
+      "Queueing metadata instead of node labels.",
+      "Confusing graph node set with edge list."
+    ],
+    "contrastCases": [
+      "DFS: explores one branch fully before backtracking — does not guarantee shortest path.",
+      "Level Order Traversal: snapshot queue length at start of each level to group nodes."
+    ],
+    "relatedProblems": ["binary-tree-level-order-traversal"]
+  },
+  {
+    "id": "dfs-cycle-detection",
+    "name": "DFS Cycle Detection",
+    "triggers": [
+      "Directed graph.",
+      "Need to know if a dependency cycle exists.",
+      "Shared subgraphs can be reused after proven safe."
+    ],
+    "whatItGives": "Detects cycles in directed graphs using three-color DFS; also used for topological sort.",
+    "invariant": "0 = unseen, 1 = visiting / current recursion path, 2 = done / proven safe. Seeing state 1 means cycle.",
+    "jsSkeleton": "function canFinish(n, prerequisites) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [a, b] of prerequisites) adj[b].push(a);\n\n  const state = new Array(n).fill(0); // 0=unseen, 1=visiting, 2=done\n\n  function hasCycle(node) {\n    if (state[node] === 1) return true;\n    if (state[node] === 2) return false;\n    state[node] = 1;\n    for (const nei of adj[node]) {\n      if (hasCycle(nei)) return true;\n    }\n    state[node] = 2;\n    return false;\n  }\n\n  for (let i = 0; i < n; i++) {\n    if (hasCycle(i)) return false;\n  }\n  return true;\n}",
+    "failureModes": [
+      "Using boolean visited for directed cycle detection.",
+      "Not distinguishing currently visiting from fully processed.",
+      "Building graph from edge list incorrectly."
+    ],
+    "contrastCases": [
+      "BFS for cycle detection: works for undirected graphs but not directed.",
+      "Topological sort (Kahn's): BFS-based alternative using in-degree counts."
+    ],
+    "relatedProblems": ["course-schedule"]
+  },
+  {
+    "id": "set-membership",
+    "name": "Set Membership",
+    "triggers": [
+      "Question is pure existence: has anything repeated or appeared?",
+      "No counts needed — only presence/absence matters.",
+      "Need O(1) lookup for prior elements."
+    ],
+    "whatItGives": "O(1) average membership test with minimal overhead.",
+    "invariant": "set contains all previously seen values; membership test answers 'was this seen before?'",
+    "jsSkeleton": "function containsDuplicate(nums) {\n  const seen = new Set();\n  for (const n of nums) {\n    if (seen.has(n)) return true;\n    seen.add(n);\n  }\n  return false;\n}",
+    "failureModes": [
+      "Using a frequency map when only existence is needed.",
+      "Sorting to detect duplicates when O(n) Set solution suffices."
+    ],
+    "contrastCases": [
+      "Frequency Map: use when counts matter, not just presence.",
+      "Hash Map Complement: use when you need to find a matching pair, not just any duplicate."
+    ],
+    "relatedProblems": ["contains-duplicate"]
+  },
+  {
+    "id": "canonical-key-grouping",
+    "name": "Canonical Key Grouping",
+    "triggers": [
+      "Need to group elements that share some equivalence relation.",
+      "Two elements are equivalent if their sorted form or frequency signature matches.",
+      "Output is groups, not individual matches."
+    ],
+    "whatItGives": "Groups equivalents in one pass using a derived canonical key.",
+    "invariant": "All elements with the same canonical key map to the same bucket.",
+    "jsSkeleton": "function groupAnagrams(strs) {\n  const map = new Map();\n  for (const s of strs) {\n    const key = s.split('').sort().join('');\n    if (!map.has(key)) map.set(key, []);\n    map.get(key).push(s);\n  }\n  return [...map.values()];\n}",
+    "failureModes": [
+      "Using sorted string as key without considering Unicode edge cases.",
+      "Building frequency array key with join separator that can collide across character positions."
+    ],
+    "contrastCases": [
+      "Frequency Map: compares two strings directly; Canonical Key Grouping groups many strings.",
+      "Set Membership: checks existence; Canonical Key Grouping produces grouped output."
+    ],
+    "relatedProblems": ["group-anagrams"]
+  },
+  {
+    "id": "stack-matching",
+    "name": "Stack for Matching / Monotonic State",
+    "triggers": [
+      "Need to match open/close pairs or nested structures.",
+      "Need to track the most recent unmatched element.",
+      "Monotonic property: answer depends on nearest larger/smaller element."
+    ],
+    "whatItGives": "O(n) processing of nested or monotonic relationships.",
+    "invariant": "Stack top is the most recent unmatched or relevant element; pop when a match or dominance condition is met.",
+    "jsSkeleton": "function isValid(s) {\n  const stack = [];\n  const close = { ')': '(', ']': '[', '}': '{' };\n  for (const c of s) {\n    if ('([{'.includes(c)) {\n      stack.push(c);\n    } else {\n      if (stack.pop() !== close[c]) return false;\n    }\n  }\n  return stack.length === 0;\n}",
+    "failureModes": [
+      "Popping without checking if stack is empty.",
+      "Forgetting to verify stack is empty at the end.",
+      "Using a queue instead of a stack (FIFO vs LIFO)."
+    ],
+    "contrastCases": [
+      "BFS Queue: FIFO; use for level-order traversal, not matching.",
+      "Min Stack: augmented stack for O(1) min queries — different from matching."
+    ],
+    "relatedProblems": ["valid-parentheses", "min-stack"]
+  },
+  {
+    "id": "tree-dfs",
+    "name": "Tree DFS (Recursive)",
+    "triggers": [
+      "Problem on a binary tree that can be solved per-node.",
+      "Answer at a node depends on answers from children (post-order) or parent context (pre-order).",
+      "Structural mutation or comparison of subtrees."
+    ],
+    "whatItGives": "O(n) traversal with natural recursion; base case handles null nodes.",
+    "invariant": "Each call returns the answer for its subtree; null returns the base-case value (0, true, null).",
+    "jsSkeleton": "function maxDepth(root) {\n  if (root === null) return 0;\n  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n}\n\nfunction invertTree(root) {\n  if (root === null) return null;\n  [root.left, root.right] = [root.right, root.left];\n  invertTree(root.left);\n  invertTree(root.right);\n  return root;\n}",
+    "failureModes": [
+      "Forgetting the null base case.",
+      "Confusing pre-order vs post-order when mutation order matters.",
+      "Returning a value that mixes subtree info with accumulated state."
+    ],
+    "contrastCases": [
+      "BFS Queue: use when you need level-by-level processing, not depth-first.",
+      "Iterative DFS with explicit stack: needed when call-stack depth is a concern."
+    ],
+    "relatedProblems": [
+      "maximum-depth-of-binary-tree",
+      "invert-binary-tree",
+      "same-tree",
+      "validate-binary-search-tree"
+    ]
+  },
+  {
+    "id": "grid-flood-fill",
+    "name": "Grid DFS / BFS Flood Fill",
+    "triggers": [
+      "Grid of cells; need to count or process connected components.",
+      "Need to mark all reachable cells from a starting cell.",
+      "Trigger phrase: 'connected component count in a grid'."
+    ],
+    "whatItGives": "O(rows × cols) traversal of all connected cells.",
+    "invariant": "Once a cell is visited (marked or set to '0'), it will not be counted again.",
+    "jsSkeleton": "function numIslands(grid) {\n  let count = 0;\n  for (let r = 0; r < grid.length; r++) {\n    for (let c = 0; c < grid[0].length; c++) {\n      if (grid[r][c] === '1') {\n        count++;\n        dfs(grid, r, c);\n      }\n    }\n  }\n  return count;\n}\n\nfunction dfs(grid, r, c) {\n  if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length || grid[r][c] !== '1') return;\n  grid[r][c] = '0'; // mark visited\n  dfs(grid, r + 1, c);\n  dfs(grid, r - 1, c);\n  dfs(grid, r, c + 1);\n  dfs(grid, r, c - 1);\n}",
+    "failureModes": [
+      "Marking visited after processing instead of before, causing infinite recursion.",
+      "Forgetting bounds checks before array access.",
+      "Using BFS without a visited set for grids where mutation is not allowed."
+    ],
+    "contrastCases": [
+      "Clone Graph: graph nodes, not grid cells — use adjacency list + visited map.",
+      "Tree DFS: tree has no cycles; grid may have 4-directional neighbors."
+    ],
+    "relatedProblems": ["number-of-islands"]
+  },
+  {
+    "id": "prefix-suffix-products",
+    "name": "Prefix / Suffix Products",
+    "triggers": [
+      "Need product of all elements except self.",
+      "No division allowed.",
+      "Answer at position i depends on all elements to its left and right."
+    ],
+    "whatItGives": "O(n) solution without division by precomputing left and right running products.",
+    "invariant": "result[i] = prefix[i] * suffix[i] where prefix[i] is product of all elements before i and suffix[i] is product of all elements after i.",
+    "jsSkeleton": "function productExceptSelf(nums) {\n  const n = nums.length;\n  const result = new Array(n).fill(1);\n  let prefix = 1;\n  for (let i = 0; i < n; i++) {\n    result[i] = prefix;\n    prefix *= nums[i];\n  }\n  let suffix = 1;\n  for (let i = n - 1; i >= 0; i--) {\n    result[i] *= suffix;\n    suffix *= nums[i];\n  }\n  return result;\n}",
+    "failureModes": [
+      "Trying to use division (fails when zeros are present).",
+      "Using O(n²) nested loop instead of prefix/suffix passes."
+    ],
+    "contrastCases": [
+      "Running sum / prefix sum: for addition instead of multiplication.",
+      "Sliding window: for contiguous subarray problems, not element-exclusion products."
+    ],
+    "relatedProblems": ["product-of-array-except-self"]
+  },
+  {
+    "id": "heap-top-k",
+    "name": "Heap / Top-K Selection",
+    "triggers": [
+      "Need the K largest, K smallest, or K most frequent elements.",
+      "Need O(n log k) instead of O(n log n) full sort.",
+      "Problem mentions 'top K', 'K closest', or 'Kth largest'."
+    ],
+    "whatItGives": "O(n log k) selection using a min-heap of size k.",
+    "invariant": "Heap always contains the k best candidates seen so far; if new element beats the worst, replace it.",
+    "jsSkeleton": "// Using a frequency map + sorted entries (JS lacks a built-in heap)\nfunction topKFrequent(nums, k) {\n  const freq = new Map();\n  for (const n of nums) freq.set(n, (freq.get(n) ?? 0) + 1);\n  return [...freq.entries()]\n    .sort((a, b) => b[1] - a[1])\n    .slice(0, k)\n    .map(([val]) => val);\n}",
+    "failureModes": [
+      "Sorting the entire array when only K elements are needed.",
+      "Building a max-heap instead of min-heap for top-K (should evict the smallest)."
+    ],
+    "contrastCases": [
+      "Sort + slice: simpler but O(n log n); heap gives O(n log k).",
+      "QuickSelect: O(n) average for Kth element but harder to implement correctly."
+    ],
+    "relatedProblems": [
+      "top-k-frequent-elements",
+      "k-closest-points-to-origin",
+      "kth-largest-element-in-an-array"
+    ]
+  },
+  {
+    "id": "backtracking",
+    "name": "Backtracking",
+    "triggers": [
+      "Need all subsets, permutations, or combinations.",
+      "Build solution incrementally; abandon a branch when a constraint is violated.",
+      "Output is a list of complete paths through a decision tree."
+    ],
+    "whatItGives": "Explores all valid paths in the decision tree; prunes invalid branches early.",
+    "invariant": "At each recursive call, the current partial solution is valid; after the call returns, undo the last choice (backtrack).",
+    "jsSkeleton": "function subsets(nums) {\n  const result = [];\n  function bt(start, current) {\n    result.push([...current]);\n    for (let i = start; i < nums.length; i++) {\n      current.push(nums[i]);\n      bt(i + 1, current);\n      current.pop(); // backtrack\n    }\n  }\n  bt(0, []);\n  return result;\n}",
+    "failureModes": [
+      "Forgetting to pop/undo after the recursive call (corrupts shared state).",
+      "Using the same start index for permutations (should allow revisiting positions).",
+      "Missing the base case for Combination Sum (target becomes 0 or negative)."
+    ],
+    "contrastCases": [
+      "DP: memoize overlapping subproblems; backtracking enumerates all solutions.",
+      "BFS: explores by distance; backtracking explores by decision depth."
+    ],
+    "relatedProblems": ["subsets", "combination-sum"]
+  },
+  {
+    "id": "dp-1d",
+    "name": "1-D Dynamic Programming",
+    "triggers": [
+      "Optimal substructure: best answer for size n depends on best answers for smaller sizes.",
+      "Problem asks for count, min cost, or max value over a sequence.",
+      "Overlapping subproblems: naive recursion recomputes the same states."
+    ],
+    "whatItGives": "O(n) bottom-up table fill after identifying the recurrence.",
+    "invariant": "dp[i] holds the optimal answer for the first i elements (or up to position i); fill left to right.",
+    "jsSkeleton": "// Climbing Stairs\nfunction climbStairs(n) {\n  if (n <= 2) return n;\n  let prev2 = 1, prev1 = 2;\n  for (let i = 3; i <= n; i++) {\n    const curr = prev1 + prev2;\n    prev2 = prev1;\n    prev1 = curr;\n  }\n  return prev1;\n}\n\n// House Robber\nfunction rob(nums) {\n  let prev2 = 0, prev1 = 0;\n  for (const n of nums) {\n    const curr = Math.max(prev1, prev2 + n);\n    prev2 = prev1;\n    prev1 = curr;\n  }\n  return prev1;\n}",
+    "failureModes": [
+      "Off-by-one in the base case (dp[0] vs dp[1] meaning).",
+      "Using recursion without memoization, hitting exponential time.",
+      "Coin Change: forgetting to initialize dp with Infinity and handle unreachable states."
+    ],
+    "contrastCases": [
+      "Backtracking: enumerates all paths; DP finds the optimal one.",
+      "Greedy: makes a local optimal choice; DP considers all subproblem outcomes."
+    ],
+    "relatedProblems": [
+      "climbing-stairs",
+      "house-robber",
+      "coin-change",
+      "maximum-subarray"
+    ]
+  },
+  {
+    "id": "binary-search",
+    "name": "Binary Search",
+    "triggers": [
+      "Search space is sorted or has a monotonic property.",
+      "Can determine which half to discard at each step.",
+      "Problem asks for minimum feasible value (binary search on the answer)."
+    ],
+    "whatItGives": "O(log n) search by halving the search space each iteration.",
+    "invariant": "Answer always lies within [left, right]; after each step the range shrinks by at least half.",
+    "jsSkeleton": "function search(nums, target) {\n  let left = 0, right = nums.length - 1;\n  while (left <= right) {\n    const mid = left + Math.floor((right - left) / 2);\n    if (nums[mid] === target) return mid;\n    else if (nums[mid] < target) left = mid + 1;\n    else right = mid - 1;\n  }\n  return -1;\n}\n\n// Rotated sorted array: check which half is sorted first\nfunction searchRotated(nums, target) {\n  let left = 0, right = nums.length - 1;\n  while (left <= right) {\n    const mid = left + Math.floor((right - left) / 2);\n    if (nums[mid] === target) return mid;\n    if (nums[left] <= nums[mid]) {\n      if (nums[left] <= target && target < nums[mid]) right = mid - 1;\n      else left = mid + 1;\n    } else {\n      if (nums[mid] < target && target <= nums[right]) left = mid + 1;\n      else right = mid - 1;\n    }\n  }\n  return -1;\n}",
+    "failureModes": [
+      "Integer overflow: use mid = left + Math.floor((right - left) / 2), not (left + right) / 2.",
+      "Off-by-one: confusing left <= right vs left < right termination conditions.",
+      "Rotated array: not checking which half is sorted before deciding where to search."
+    ],
+    "contrastCases": [
+      "Two Pointers: both pointers move; binary search only moves one boundary per step.",
+      "Binary search on answer: search space is the value range, not array indices."
+    ],
+    "relatedProblems": [
+      "search-in-rotated-sorted-array",
+      "find-minimum-in-rotated-sorted-array",
+      "koko-eating-bananas"
+    ]
+  },
+  {
+    "id": "linked-list-traversal",
+    "name": "Linked List Traversal / Manipulation",
+    "triggers": [
+      "Input is a singly linked list.",
+      "Need to reverse, merge, or restructure node pointers.",
+      "Two-pointer (fast/slow) technique for cycle or midpoint detection."
+    ],
+    "whatItGives": "O(n) in-place manipulation by rearranging next pointers.",
+    "invariant": "At each step, maintain the invariant about which nodes are fully processed; never lose a reference before re-pointing.",
+    "jsSkeleton": "// Reverse Linked List\nfunction reverseList(head) {\n  let prev = null, curr = head;\n  while (curr !== null) {\n    const next = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}\n\n// Merge Two Sorted Lists\nfunction mergeTwoLists(l1, l2) {\n  const dummy = { next: null };\n  let cur = dummy;\n  while (l1 && l2) {\n    if (l1.val <= l2.val) { cur.next = l1; l1 = l1.next; }\n    else { cur.next = l2; l2 = l2.next; }\n    cur = cur.next;\n  }\n  cur.next = l1 ?? l2;\n  return dummy.next;\n}",
+    "failureModes": [
+      "Losing the next pointer before saving it during reversal.",
+      "Not using a dummy head node for merge, causing extra null checks.",
+      "Reorder List: not finding the midpoint correctly before reversing the second half."
+    ],
+    "contrastCases": [
+      "Array two pointers: random access; linked list must traverse sequentially.",
+      "Tree DFS: tree is a linked structure but with two children, not one next pointer."
+    ],
+    "relatedProblems": [
+      "reverse-linked-list",
+      "merge-two-sorted-lists",
+      "reorder-list"
+    ]
+  },
+  {
+    "id": "graph-traversal",
+    "name": "Graph Traversal (BFS/DFS on Adjacency List)",
+    "triggers": [
+      "Input is a graph (not a tree, grid, or DAG for cycle detection).",
+      "Need to visit all reachable nodes from a source.",
+      "Need to clone, label, or count connected components in a general graph."
+    ],
+    "whatItGives": "O(V + E) traversal of all reachable nodes and edges.",
+    "invariant": "visited map/set prevents revisiting nodes; maps old node to new node for cloning.",
+    "jsSkeleton": "// Clone Graph\nfunction cloneGraph(node) {\n  if (!node) return null;\n  const cloned = new Map();\n  function dfs(n) {\n    if (cloned.has(n)) return cloned.get(n);\n    const copy = { val: n.val, neighbors: [] };\n    cloned.set(n, copy);\n    for (const nei of n.neighbors) copy.neighbors.push(dfs(nei));\n    return copy;\n  }\n  return dfs(node);\n}",
+    "failureModes": [
+      "Not setting the clone in the map BEFORE recursing into neighbors (causes infinite loop on cycles).",
+      "Using node value as map key instead of node reference (fails with duplicate values)."
+    ],
+    "contrastCases": [
+      "Grid Flood Fill: cells in a grid; Graph Traversal: nodes with arbitrary adjacency.",
+      "DFS Cycle Detection: directed graph + three-color state; Graph Traversal: undirected reachability."
+    ],
+    "relatedProblems": ["clone-graph"]
+  }
+]

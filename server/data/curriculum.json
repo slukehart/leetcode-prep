@@ -1,0 +1,464 @@
+[
+  {
+    "id": "sprint",
+    "title": "Sprint — Sun 2026-05-31 Screen",
+    "groups": [
+      {
+        "id": "sprint-tue",
+        "title": "Tuesday Evening",
+        "subtitle": "Setup + Solve Protocol in JS (1–1.5h)",
+        "items": [
+          {
+            "id": "sprint-tue-two-sum",
+            "label": "Two Sum",
+            "problemId": "two-sum"
+          },
+          {
+            "id": "sprint-tue-contains-duplicate",
+            "label": "Contains Duplicate",
+            "problemId": "contains-duplicate"
+          }
+        ]
+      },
+      {
+        "id": "sprint-wed",
+        "title": "Wednesday",
+        "subtitle": "Hashing/Arrays + Two Pointers (2h)",
+        "items": [
+          {
+            "id": "sprint-wed-valid-anagram",
+            "label": "Valid Anagram",
+            "problemId": "valid-anagram"
+          },
+          {
+            "id": "sprint-wed-group-anagrams",
+            "label": "Group Anagrams",
+            "problemId": "group-anagrams"
+          },
+          {
+            "id": "sprint-wed-valid-palindrome",
+            "label": "Valid Palindrome",
+            "problemId": "valid-palindrome"
+          },
+          {
+            "id": "sprint-wed-two-sum-ii",
+            "label": "Two Sum II",
+            "problemId": "two-sum-ii-input-array-is-sorted"
+          }
+        ]
+      },
+      {
+        "id": "sprint-thu",
+        "title": "Thursday",
+        "subtitle": "Sliding Window + Stack + D+1 re-solves (2h)",
+        "items": [
+          {
+            "id": "sprint-thu-longest-substring",
+            "label": "Longest Substring Without Repeating Characters",
+            "problemId": "longest-substring-without-repeating-characters"
+          },
+          {
+            "id": "sprint-thu-best-time",
+            "label": "Best Time to Buy and Sell Stock",
+            "problemId": "best-time-to-buy-and-sell-stock"
+          },
+          {
+            "id": "sprint-thu-valid-parentheses",
+            "label": "Valid Parentheses",
+            "problemId": "valid-parentheses"
+          }
+        ]
+      },
+      {
+        "id": "sprint-fri",
+        "title": "Friday",
+        "subtitle": "Trees + BFS/DFS + D+1 re-solves (2h)",
+        "items": [
+          {
+            "id": "sprint-fri-max-depth",
+            "label": "Maximum Depth of Binary Tree",
+            "problemId": "maximum-depth-of-binary-tree"
+          },
+          {
+            "id": "sprint-fri-invert-tree",
+            "label": "Invert Binary Tree",
+            "problemId": "invert-binary-tree"
+          },
+          {
+            "id": "sprint-fri-level-order",
+            "label": "Binary Tree Level Order Traversal",
+            "problemId": "binary-tree-level-order-traversal"
+          },
+          {
+            "id": "sprint-fri-number-of-islands",
+            "label": "Number of Islands",
+            "problemId": "number-of-islands"
+          }
+        ]
+      },
+      {
+        "id": "sprint-sat",
+        "title": "Saturday",
+        "subtitle": "Timed Mock + Repair (2–3h)",
+        "items": [
+          {
+            "id": "sprint-sat-mock-1",
+            "label": "Random medium #1 (timed, talk aloud)"
+          },
+          {
+            "id": "sprint-sat-mock-2",
+            "label": "Random medium #2 (timed, talk aloud)"
+          },
+          {
+            "id": "sprint-sat-mock-3",
+            "label": "Random medium #3 (timed, talk aloud)"
+          }
+        ]
+      },
+      {
+        "id": "sprint-sun",
+        "title": "Sunday Morning",
+        "subtitle": "Warm Up, Don't Cram (light)",
+        "items": [
+          {
+            "id": "sprint-sun-easy-review",
+            "label": "1 easy re-solve + review trigger lines"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mastery",
+    "title": "Mastery — 6-Week Interview Prep",
+    "groups": [
+      {
+        "id": "mastery-w1",
+        "title": "Week 1",
+        "subtitle": "Arrays, Hashing, Strings, Solve Protocol",
+        "items": [
+          {
+            "id": "mastery-w1-pattern-hash-map",
+            "label": "Pattern: Hash Map Complement Lookup",
+            "patternId": "hash-map-complement"
+          },
+          {
+            "id": "mastery-w1-pattern-set-membership",
+            "label": "Pattern: Set Membership",
+            "patternId": "set-membership"
+          },
+          {
+            "id": "mastery-w1-pattern-frequency-map",
+            "label": "Pattern: Frequency Map",
+            "patternId": "frequency-map"
+          },
+          {
+            "id": "mastery-w1-pattern-canonical-key",
+            "label": "Pattern: Canonical Key Grouping",
+            "patternId": "canonical-key-grouping"
+          },
+          {
+            "id": "mastery-w1-pattern-prefix-suffix",
+            "label": "Pattern: Prefix/Suffix Products",
+            "patternId": "prefix-suffix-products"
+          },
+          {
+            "id": "mastery-w1-two-sum",
+            "label": "Two Sum",
+            "problemId": "two-sum"
+          },
+          {
+            "id": "mastery-w1-contains-duplicate",
+            "label": "Contains Duplicate",
+            "problemId": "contains-duplicate"
+          },
+          {
+            "id": "mastery-w1-valid-anagram",
+            "label": "Valid Anagram",
+            "problemId": "valid-anagram"
+          },
+          {
+            "id": "mastery-w1-group-anagrams",
+            "label": "Group Anagrams",
+            "problemId": "group-anagrams"
+          },
+          {
+            "id": "mastery-w1-product-except-self",
+            "label": "Product of Array Except Self",
+            "problemId": "product-of-array-except-self"
+          },
+          {
+            "id": "mastery-w1-top-k-frequent",
+            "label": "Top K Frequent Elements",
+            "problemId": "top-k-frequent-elements"
+          }
+        ]
+      },
+      {
+        "id": "mastery-w2",
+        "title": "Week 2",
+        "subtitle": "Two Pointers, Sliding Window, Stack",
+        "items": [
+          {
+            "id": "mastery-w2-pattern-two-pointers",
+            "label": "Pattern: Two Pointers on Sorted Input",
+            "patternId": "two-pointers"
+          },
+          {
+            "id": "mastery-w2-pattern-sliding-window",
+            "label": "Pattern: Sliding Window",
+            "patternId": "sliding-window"
+          },
+          {
+            "id": "mastery-w2-pattern-stack-matching",
+            "label": "Pattern: Stack for Matching / Monotonic State",
+            "patternId": "stack-matching"
+          },
+          {
+            "id": "mastery-w2-valid-palindrome",
+            "label": "Valid Palindrome",
+            "problemId": "valid-palindrome"
+          },
+          {
+            "id": "mastery-w2-two-sum-ii",
+            "label": "Two Sum II - Input Array Is Sorted",
+            "problemId": "two-sum-ii-input-array-is-sorted"
+          },
+          {
+            "id": "mastery-w2-3sum",
+            "label": "3Sum",
+            "problemId": "3sum"
+          },
+          {
+            "id": "mastery-w2-best-time",
+            "label": "Best Time to Buy and Sell Stock",
+            "problemId": "best-time-to-buy-and-sell-stock"
+          },
+          {
+            "id": "mastery-w2-longest-substring",
+            "label": "Longest Substring Without Repeating Characters",
+            "problemId": "longest-substring-without-repeating-characters"
+          },
+          {
+            "id": "mastery-w2-longest-repeating",
+            "label": "Longest Repeating Character Replacement",
+            "problemId": "longest-repeating-character-replacement"
+          },
+          {
+            "id": "mastery-w2-valid-parentheses",
+            "label": "Valid Parentheses",
+            "problemId": "valid-parentheses"
+          },
+          {
+            "id": "mastery-w2-min-stack",
+            "label": "Min Stack",
+            "problemId": "min-stack"
+          }
+        ]
+      },
+      {
+        "id": "mastery-w3",
+        "title": "Week 3",
+        "subtitle": "Trees, BFS/DFS, Graph Basics",
+        "items": [
+          {
+            "id": "mastery-w3-pattern-tree-dfs",
+            "label": "Pattern: Tree DFS Return Value",
+            "patternId": "tree-dfs"
+          },
+          {
+            "id": "mastery-w3-pattern-bfs-queue",
+            "label": "Pattern: BFS Queue",
+            "patternId": "bfs-queue"
+          },
+          {
+            "id": "mastery-w3-pattern-grid-flood-fill",
+            "label": "Pattern: Grid DFS/BFS Flood Fill",
+            "patternId": "grid-flood-fill"
+          },
+          {
+            "id": "mastery-w3-pattern-dfs-cycle",
+            "label": "Pattern: DFS Cycle Detection",
+            "patternId": "dfs-cycle-detection"
+          },
+          {
+            "id": "mastery-w3-invert-tree",
+            "label": "Invert Binary Tree",
+            "problemId": "invert-binary-tree"
+          },
+          {
+            "id": "mastery-w3-max-depth",
+            "label": "Maximum Depth of Binary Tree",
+            "problemId": "maximum-depth-of-binary-tree"
+          },
+          {
+            "id": "mastery-w3-same-tree",
+            "label": "Same Tree",
+            "problemId": "same-tree"
+          },
+          {
+            "id": "mastery-w3-level-order",
+            "label": "Binary Tree Level Order Traversal",
+            "problemId": "binary-tree-level-order-traversal"
+          },
+          {
+            "id": "mastery-w3-validate-bst",
+            "label": "Validate Binary Search Tree",
+            "problemId": "validate-binary-search-tree"
+          },
+          {
+            "id": "mastery-w3-number-of-islands",
+            "label": "Number of Islands",
+            "problemId": "number-of-islands"
+          },
+          {
+            "id": "mastery-w3-clone-graph",
+            "label": "Clone Graph",
+            "problemId": "clone-graph"
+          },
+          {
+            "id": "mastery-w3-course-schedule",
+            "label": "Course Schedule",
+            "problemId": "course-schedule"
+          }
+        ]
+      },
+      {
+        "id": "mastery-w4",
+        "title": "Week 4",
+        "subtitle": "Backtracking, DP Basics, Mixed Review",
+        "items": [
+          {
+            "id": "mastery-w4-pattern-backtracking",
+            "label": "Pattern: Backtracking",
+            "patternId": "backtracking"
+          },
+          {
+            "id": "mastery-w4-pattern-dp-1d",
+            "label": "Pattern: 1-D Dynamic Programming",
+            "patternId": "dp-1d"
+          },
+          {
+            "id": "mastery-w4-subsets",
+            "label": "Subsets",
+            "problemId": "subsets"
+          },
+          {
+            "id": "mastery-w4-combination-sum",
+            "label": "Combination Sum",
+            "problemId": "combination-sum"
+          },
+          {
+            "id": "mastery-w4-climbing-stairs",
+            "label": "Climbing Stairs",
+            "problemId": "climbing-stairs"
+          },
+          {
+            "id": "mastery-w4-house-robber",
+            "label": "House Robber",
+            "problemId": "house-robber"
+          },
+          {
+            "id": "mastery-w4-coin-change",
+            "label": "Coin Change",
+            "problemId": "coin-change"
+          },
+          {
+            "id": "mastery-w4-maximum-subarray",
+            "label": "Maximum Subarray",
+            "problemId": "maximum-subarray"
+          }
+        ]
+      },
+      {
+        "id": "mastery-w5",
+        "title": "Week 5",
+        "subtitle": "Binary Search, Linked List, Heap",
+        "items": [
+          {
+            "id": "mastery-w5-pattern-binary-search",
+            "label": "Pattern: Binary Search",
+            "patternId": "binary-search"
+          },
+          {
+            "id": "mastery-w5-pattern-linked-list",
+            "label": "Pattern: Linked List Traversal / Manipulation",
+            "patternId": "linked-list-traversal"
+          },
+          {
+            "id": "mastery-w5-pattern-heap-top-k",
+            "label": "Pattern: Heap / Top-K Selection",
+            "patternId": "heap-top-k"
+          },
+          {
+            "id": "mastery-w5-search-rotated",
+            "label": "Search in Rotated Sorted Array",
+            "problemId": "search-in-rotated-sorted-array"
+          },
+          {
+            "id": "mastery-w5-find-min-rotated",
+            "label": "Find Minimum in Rotated Sorted Array",
+            "problemId": "find-minimum-in-rotated-sorted-array"
+          },
+          {
+            "id": "mastery-w5-koko",
+            "label": "Koko Eating Bananas",
+            "problemId": "koko-eating-bananas"
+          },
+          {
+            "id": "mastery-w5-reverse-linked-list",
+            "label": "Reverse Linked List",
+            "problemId": "reverse-linked-list"
+          },
+          {
+            "id": "mastery-w5-merge-two-lists",
+            "label": "Merge Two Sorted Lists",
+            "problemId": "merge-two-sorted-lists"
+          },
+          {
+            "id": "mastery-w5-reorder-list",
+            "label": "Reorder List",
+            "problemId": "reorder-list"
+          },
+          {
+            "id": "mastery-w5-k-closest",
+            "label": "K Closest Points to Origin",
+            "problemId": "k-closest-points-to-origin"
+          },
+          {
+            "id": "mastery-w5-kth-largest",
+            "label": "Kth Largest Element in an Array",
+            "problemId": "kth-largest-element-in-an-array"
+          }
+        ]
+      },
+      {
+        "id": "mastery-w6",
+        "title": "Week 6",
+        "subtitle": "Mixed Mocks + Weakness Repair",
+        "items": [
+          {
+            "id": "mastery-w6-mock-1",
+            "label": "Timed mock #1 (random medium)"
+          },
+          {
+            "id": "mastery-w6-mock-2",
+            "label": "Timed mock #2 (random medium)"
+          },
+          {
+            "id": "mastery-w6-mock-3",
+            "label": "Timed mock #3 (random medium)"
+          },
+          {
+            "id": "mastery-w6-weakness-repair",
+            "label": "Prioritize mistakes from tracker"
+          },
+          {
+            "id": "mastery-w6-d7-resolves",
+            "label": "D+7 re-solves of weakest patterns"
+          }
+        ]
+      }
+    ]
+  }
+]
