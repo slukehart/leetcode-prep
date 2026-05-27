@@ -20,10 +20,24 @@
       "3Sum: sort + fixed anchor + two pointers is better because output is values/triplets, not original indices."
     ],
     "relatedProblems": ["two-sum"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "The complement lookup pattern exploits a mathematical relationship: if a + b = target, then for any a you encounter, b = target - a. The question becomes 'have I already seen b?' — which a hash map answers in O(1).\n\nThe key insight is the direction of the lookup. You don't search for pairs; you turn each element into a query against your memory. As you walk the array, you ask 'does my complement exist in what I've already seen?' If yes, you're done. If no, you record this element so a future element can find it.\n\nThis is why you check BEFORE inserting: you want to find a previously seen complement, not match an element with itself. Inserting first would let index 0 match index 0 if nums[0] * 2 === target.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)",
+      "explanation": "Single pass over the array — O(n) time. In the worst case (no pair found until the last element) the map holds n-1 entries — O(n) space."
+    },
+    "workedExample": {
+      "input": "nums = [2, 7, 11, 15], target = 9",
+      "steps": [
+        "i=0: need = 9 - 2 = 7. seen is empty → not found. Insert seen[2] = 0.",
+        "i=1: need = 9 - 7 = 2. seen has 2 → found! Return [seen[2], 1] = [0, 1]."
+      ]
+    },
+    "whenNotToUse": [
+      "Input is already sorted and you need original indices — Two Pointers gives O(1) space (but destroys index info if you sort an unsorted array).",
+      "You need all pairs, not just the first — the map approach returns immediately; you'd need to collect all matches instead.",
+      "Keys could be numeric strings or collide with Object.prototype — use Map, not a plain object."
+    ]
   },
   {
     "id": "frequency-map",
@@ -88,10 +102,25 @@
       "Valid Palindrome: not sorted but still uses opposite-end convergence; non-alphanumeric skip complicates the loop."
     ],
     "relatedProblems": ["valid-palindrome", "two-sum-ii-input-array-is-sorted", "3sum"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Two pointers work because sorted order gives you a guarantee: if you move the left pointer right, the sum goes up; if you move the right pointer left, the sum goes down. This monotonic property means you never need to revisit a position — each pointer moves at most n times, giving O(n) total.\n\nThink of it as a search that uses the sort order to always make progress. If the current sum is too small, you need a bigger left element — move left forward. If the sum is too large, you need a smaller right element — move right backward. If the sum matches, you're done. You can never miss a solution because any skipped position is dominated by the current state.\n\nThe invariant is tight: the answer, if it exists, always lies within [left, right]. Once the pointers cross, all pairs have been considered.",
+    "complexity": {
+      "time": "O(n log n)",
+      "space": "O(1)",
+      "explanation": "O(n log n) if you need to sort first; O(n) if already sorted. Two-pointer scan is O(n) — each pointer moves at most n times total. O(1) space since only two indices are tracked."
+    },
+    "workedExample": {
+      "input": "nums = [2, 7, 11, 15], target = 9",
+      "steps": [
+        "left=0 (val 2), right=3 (val 15). sum=17 > 9 → move right left.",
+        "left=0 (val 2), right=2 (val 11). sum=13 > 9 → move right left.",
+        "left=0 (val 2), right=1 (val 7). sum=9 = target → return [1, 2] (1-indexed)."
+      ]
+    },
+    "whenNotToUse": [
+      "Input is unsorted and original indices matter — sorting destroys index info; use Hash Map Complement instead.",
+      "You need to find more than two elements — for 3Sum, anchor one element and run two pointers on the rest.",
+      "The 'move one pointer' step doesn't have a clear monotonic effect — two pointers only work when moving a pointer always changes the result in a predictable direction."
+    ]
   },
   {
     "id": "sliding-window",
@@ -118,10 +147,27 @@
       "best-time-to-buy-and-sell-stock",
       "longest-repeating-character-replacement"
     ],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "A sliding window maintains a contiguous subarray or substring that satisfies some validity condition. The right pointer expands the window greedily; the left pointer shrinks it only when the window becomes invalid. Because each element enters the window once (via right) and leaves once (via left), the total work is O(n) even with a nested while loop.\n\nThe core insight is that validity can be maintained incrementally. You don't recompute the window from scratch each time — you update a counter or map as the window grows and shrinks. This is what makes the pattern efficient: O(1) update per step, not O(window size).\n\nA common mistake is recording the answer inside the shrink loop instead of after it. The invariant must hold before you update your best. Always ask: is the window valid RIGHT NOW, and only then update the global best.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(k)",
+      "explanation": "Each of the n characters enters the window exactly once (right pointer) and leaves at most once (left pointer) — O(n) total moves. Space is O(k) where k is the size of the character set tracked in the window map."
+    },
+    "workedExample": {
+      "input": "s = \"abcabcbb\"",
+      "steps": [
+        "right=0 ('a'): window=[a], freq={a:1}, no dup. best=1.",
+        "right=1 ('b'): window=[ab], freq={a:1,b:1}, no dup. best=2.",
+        "right=2 ('c'): window=[abc], freq={a:1,b:1,c:1}, no dup. best=3.",
+        "right=3 ('a'): freq[a]=2, dup! Shrink: remove s[left=0]='a', left=1. freq={a:1,b:1,c:1}. best=3.",
+        "Continue expanding... final answer: 3."
+      ]
+    },
+    "whenNotToUse": [
+      "The subarray doesn't need to be contiguous — sliding window only applies to contiguous windows.",
+      "Window validity can't be restored by moving the left pointer forward (e.g., sum problems where removing the leftmost element doesn't always restore validity) — re-examine whether a two-pointer or prefix-sum approach fits better.",
+      "You need the exact subarray, not just its length — track the left index at the time of the best result."
+    ]
   },
   {
     "id": "bfs-queue",
@@ -144,10 +190,26 @@
       "Level Order Traversal: snapshot queue length at start of each level to group nodes."
     ],
     "relatedProblems": ["binary-tree-level-order-traversal"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "BFS processes nodes in order of their distance from the source. Because a queue is FIFO, nodes enter in discovery order and leave in the same order — so all distance-1 nodes are processed before any distance-2 nodes. This layered processing is exactly what guarantees shortest paths in unweighted graphs.\n\nThe critical invariant is: mark nodes as visited WHEN YOU ENQUEUE THEM, not when you dequeue them. If you mark on dequeue, a node can be enqueued multiple times before it's processed, causing exponential work and incorrect results in dense graphs.\n\nFor level-order traversal, snapshot the queue length at the start of each level: the first `queueSize` dequeues belong to the current level. After processing all of them, increment the level counter.",
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)",
+      "explanation": "Each vertex is enqueued once and dequeued once — O(V). Each edge is examined once — O(E). The queue holds at most one full level of nodes — O(V) in the worst case (a star graph where all nodes are at distance 1)."
+    },
+    "workedExample": {
+      "input": "Binary tree [3,9,20,null,null,15,7] (level order)",
+      "steps": [
+        "queue=[3], visited={3}.",
+        "Level 1: dequeue 3, enqueue 9,20. result=[[3]].",
+        "Level 2: dequeue 9 (no children), dequeue 20 (enqueue 15,7). result=[[3],[9,20]].",
+        "Level 3: dequeue 15 (leaf), dequeue 7 (leaf). result=[[3],[9,20],[15,7]]."
+      ]
+    },
+    "whenNotToUse": [
+      "You need to explore one path fully before backtracking — use DFS instead.",
+      "The graph is weighted — BFS only gives shortest paths in unweighted graphs; use Dijkstra for weighted.",
+      "Memory is constrained and the graph is wide — BFS stores an entire frontier level; DFS uses O(depth) stack space instead."
+    ]
   },
   {
     "id": "dfs-cycle-detection",
@@ -170,10 +232,29 @@
       "Topological sort (Kahn's): BFS-based alternative using in-degree counts."
     ],
     "relatedProblems": ["course-schedule"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "To detect a cycle in a directed graph you need three states, not two. A boolean 'visited' isn't enough because it can't distinguish between 'currently on the recursion path' and 'already fully explored'. The three-color system captures this: 0 = unseen, 1 = currently visiting (on the stack), 2 = done (proven safe).\n\nA cycle exists when DFS reaches a node with state 1 — you've looped back to something on the current path. When state is 2, you've already proven that subtree is cycle-free, so you can return immediately without re-exploring it. This is why three-color DFS handles shared subgraphs efficiently.\n\nIf you only have two colors, you can't tell whether a visited neighbor is an ancestor (cycle) or just a previously explored node in a different branch (no cycle). That ambiguity is exactly what state 1 vs state 2 resolves.",
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V + E)",
+      "explanation": "Each node transitions through states 0→1→2 exactly once — O(V). Each edge is examined once during DFS — O(E). Adjacency list storage is O(V + E)."
+    },
+    "workedExample": {
+      "input": "n=4, prerequisites=[[1,0],[2,1],[3,2]]  (0→1→2→3, no cycle)",
+      "steps": [
+        "Build adj: 0→[1], 1→[2], 2→[3].",
+        "hasCycle(0): state[0]=1. Visit neighbor 1.",
+        "hasCycle(1): state[1]=1. Visit neighbor 2.",
+        "hasCycle(2): state[2]=1. Visit neighbor 3.",
+        "hasCycle(3): state[3]=1. No neighbors. state[3]=2. Return false.",
+        "Back at 2: state[2]=2. Back at 1: state[1]=2. Back at 0: state[0]=2.",
+        "No cycle found → return true (can finish)."
+      ]
+    },
+    "whenNotToUse": [
+      "The graph is undirected — a simpler boolean visited + parent-tracking DFS or union-find works.",
+      "You need topological order, not just cycle detection — extend this pattern by appending nodes to a result list after state[node]=2.",
+      "The graph has no directed edges — cycle detection is trivially true or false by inspection."
+    ]
   },
   {
     "id": "set-membership",
@@ -195,10 +276,26 @@
       "Hash Map Complement: use when you need to find a matching pair, not just any duplicate."
     ],
     "relatedProblems": ["contains-duplicate"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "A Set is the minimal data structure for existence queries. Its only job is to answer 'have I seen this before?' in O(1). When a problem only asks about presence — not count, not position, not order — a Set is always the right choice.\n\nThe pattern is almost mechanical: walk the collection, ask the Set if the current element is already there. If yes, you've found your duplicate (or match). If no, add it and continue. The Set grows as you walk, so you're always asking about the past.\n\nThe mistake beginners make is reaching for a frequency map or sorting when the problem doesn't require counts. Sorting is O(n log n) and destroys order; a frequency map is O(n) but carries overhead you don't need. When only existence matters, use a Set.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)",
+      "explanation": "Single pass — O(n) time. In the worst case (no duplicates until the last element) the Set holds n-1 entries — O(n) space."
+    },
+    "workedExample": {
+      "input": "nums = [1, 2, 3, 1]",
+      "steps": [
+        "i=0: seen = {}. 1 not in seen → add. seen = {1}.",
+        "i=1: 2 not in seen → add. seen = {1, 2}.",
+        "i=2: 3 not in seen → add. seen = {1, 2, 3}.",
+        "i=3: 1 IS in seen → return true."
+      ]
+    },
+    "whenNotToUse": [
+      "You need to count how many times something appears — use a frequency Map instead.",
+      "You need to find a matching pair (e.g., two numbers that sum to target) — use Hash Map Complement.",
+      "The input is sorted — you can detect duplicates in O(1) space by comparing adjacent elements."
+    ]
   },
   {
     "id": "canonical-key-grouping",
@@ -220,10 +317,29 @@
       "Set Membership: checks existence; Canonical Key Grouping produces grouped output."
     ],
     "relatedProblems": ["group-anagrams"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Grouping requires a canonical key — a normalized form that all equivalent elements share. For anagrams, sorting the characters of a word always produces the same result regardless of letter order: 'eat', 'ate', and 'tea' all sort to 'aet'. Use that sorted form as the map key, and push each original word into the bucket at that key.\n\nThe power of this pattern is that you never compare two words directly. Instead, you derive a canonical representative and let the map handle the grouping. This generalizes beyond anagrams: any equivalence relation that can be expressed as a deterministic transformation produces a canonical key.\n\nA subtle failure mode is key collision in frequency-array representations. If you use a comma-separated count array like '1,0,1,0,...' as the key, be careful that position 10 doesn't parse ambiguously with positions 1 and 0 adjacent. A separator like '#' between counts ('1#0#1#') avoids this.",
+    "complexity": {
+      "time": "O(n · k log k)",
+      "space": "O(n · k)",
+      "explanation": "For n words each of length at most k: sorting each word takes O(k log k), done n times. Space holds all words plus keys — O(n · k) total."
+    },
+    "workedExample": {
+      "input": "strs = [\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
+      "steps": [
+        "'eat' → sorted key 'aet'. map={'aet': ['eat']}.",
+        "'tea' → sorted key 'aet'. map={'aet': ['eat','tea']}.",
+        "'tan' → sorted key 'ant'. map={..., 'ant': ['tan']}.",
+        "'ate' → sorted key 'aet'. map={'aet': ['eat','tea','ate'], ...}.",
+        "'nat' → key 'ant'. map={..., 'ant': ['tan','nat']}.",
+        "'bat' → key 'abt'. map={..., 'abt': ['bat']}.",
+        "Return [[eat,tea,ate],[tan,nat],[bat]]."
+      ]
+    },
+    "whenNotToUse": [
+      "You only need to compare two strings — Frequency Map is simpler (no grouping needed).",
+      "The equivalence is not expressible as a string key — consider hashing or a different representation.",
+      "Unicode input — sort order may not be locale-independent; ensure consistent normalization."
+    ]
   },
   {
     "id": "stack-matching",
@@ -246,10 +362,29 @@
       "Min Stack: augmented stack for O(1) min queries — different from matching."
     ],
     "relatedProblems": ["valid-parentheses", "min-stack"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "A stack is LIFO — last in, first out. This mirrors nested structures perfectly: the most recently opened bracket must be the next one closed. When you see a closing bracket, you don't compare it against all previous opens — you compare it against the most recent unmatched open, which is exactly what the stack top gives you.\n\nThe invariant is: the stack always contains the unmatched opens in the order they appeared, most recent on top. When a close arrives, pop and verify. If they match, that pair is resolved and the stack top now represents the next unmatched open. If they don't match, it's invalid.\n\nDon't forget the empty-stack check at the end: an empty string of opens with no corresponding closes leaves them all on the stack. A valid sequence leaves the stack empty.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(n)",
+      "explanation": "Single pass over the n characters — O(n) time. In the worst case (all opens, no closes yet) the stack holds n/2 entries — O(n) space."
+    },
+    "workedExample": {
+      "input": "s = \"({[]})\"",
+      "steps": [
+        "See '(' → push. stack=['('].",
+        "See '{' → push. stack=['(', '{'].",
+        "See '[' → push. stack=['(', '{', '['].",
+        "See ']' → close[']']='['. Pop '[', match! stack=['(', '{'].",
+        "See '}' → close['}']='{''. Pop '{', match! stack=['('].",
+        "See ')' → close[')']='('. Pop '(', match! stack=[].",
+        "Stack empty → return true."
+      ]
+    },
+    "whenNotToUse": [
+      "The structure is not nested — for flat pair matching, a counter may suffice.",
+      "You need FIFO order, not LIFO — use a queue instead.",
+      "You're looking for the minimum value in the stack — that requires an augmented Min Stack, not standard matching."
+    ]
   },
   {
     "id": "tree-dfs",
@@ -277,10 +412,28 @@
       "same-tree",
       "validate-binary-search-tree"
     ],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Recursive tree DFS is elegant because the tree's structure mirrors the recursion's structure. Each call handles exactly one node: check the base case (null → return 0, true, or null), recurse into children, and combine results. The call stack implicitly tracks the path from root to current node.\n\nThe choice of traversal order matters: post-order (process children before the current node) is used when the answer at a node depends on its subtree — max depth, diameter, path sum. Pre-order (process current node before children) is used for structural mutations — invert, serialize, clone.\n\nThe null base case is the most important line. It handles both empty trees and the leaf-node-children case. Always handle null before accessing node.left or node.right.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(h)",
+      "explanation": "Every node is visited exactly once — O(n). The call stack depth equals the tree height h — O(h) space. For a balanced tree h = O(log n); for a skewed tree h = O(n)."
+    },
+    "workedExample": {
+      "input": "root = [3,9,20,null,null,15,7] (max depth)",
+      "steps": [
+        "maxDepth(3): recurse left and right.",
+        "maxDepth(9): left=null→0, right=null→0. Return 1+max(0,0)=1.",
+        "maxDepth(20): recurse left and right.",
+        "maxDepth(15): returns 1. maxDepth(7): returns 1.",
+        "maxDepth(20): return 1+max(1,1)=2.",
+        "maxDepth(3): return 1+max(1,2)=3."
+      ]
+    },
+    "whenNotToUse": [
+      "You need level-by-level processing — use BFS Queue instead.",
+      "The tree is very deep (n > 10,000) and the call stack could overflow — use iterative DFS with an explicit stack.",
+      "You need to track the path from root to node explicitly — pass a path parameter or use an iterative approach with a stack of (node, path) tuples."
+    ]
   },
   {
     "id": "grid-flood-fill",
@@ -303,10 +456,28 @@
       "Tree DFS: tree has no cycles; grid may have 4-directional neighbors."
     ],
     "relatedProblems": ["number-of-islands"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "A grid is just a graph where each cell is a node and edges connect 4-directional neighbors. Flood fill is DFS (or BFS) from a source cell, marking all reachable same-value cells as visited by mutating them in place.\n\nThe key optimization is the in-place mutation: rather than maintaining a separate visited array, you overwrite the cell value as you visit it ('1' → '0' for Number of Islands). This means the visited check and the mark step are the same operation.\n\nThe recursion base case must check bounds and cell value BEFORE accessing the array. Wrong order causes index-out-of-bounds errors. The correct pattern: if out-of-bounds OR cell is not '1', return immediately.",
+    "complexity": {
+      "time": "O(rows × cols)",
+      "space": "O(rows × cols)",
+      "explanation": "Each cell is visited at most once — O(m × n) time. In the worst case (an all-land grid), the recursion depth is O(m × n) — O(m × n) call stack space. Use iterative DFS or BFS to avoid stack overflow on large grids."
+    },
+    "workedExample": {
+      "input": "grid = [[1,1,0],[1,0,0],[0,0,1]]",
+      "steps": [
+        "Outer loop: grid[0][0]='1' → count=1, call dfs(0,0).",
+        "dfs(0,0): mark '0'. Call dfs(1,0), dfs(0,1).",
+        "dfs(1,0): mark '0'. Neighbors: dfs(2,0)→'0' skip, dfs(0,0)→'0' skip, dfs(1,1)→'0' skip. Return.",
+        "dfs(0,1): mark '0'. All neighbors '0' or OOB. Return.",
+        "Island 1 fully marked. Continue scan: grid[2][2]='1' → count=2.",
+        "Return count=2."
+      ]
+    },
+    "whenNotToUse": [
+      "The grid is very large — iterative BFS avoids recursion stack overflow.",
+      "You cannot mutate the grid — use a separate visited boolean array instead.",
+      "Nodes have arbitrary adjacency (not grid-based) — use general graph traversal with an adjacency list."
+    ]
   },
   {
     "id": "prefix-suffix-products",
@@ -328,10 +499,25 @@
       "Sliding window: for contiguous subarray problems, not element-exclusion products."
     ],
     "relatedProblems": ["product-of-array-except-self"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "The result at position i is the product of everything to i's left times everything to i's right. The challenge is computing that without using the element itself — and without division, which fails when zeros are present.\n\nThe insight is that you can precompute these two halves independently. A left-to-right pass builds prefix[i] = product of all elements before i. A right-to-left pass builds suffix[i] = product of all elements after i. Multiply them: result[i] = prefix[i] * suffix[i].\n\nThe space optimization is to merge the two passes: use the result array to accumulate the prefix product during the first pass, then multiply by a running suffix variable during the second pass. This avoids the separate prefix/suffix arrays, reducing space to O(1) beyond the output.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)",
+      "explanation": "Two linear passes — O(n). The output array doesn't count as extra space per the problem convention. No intermediate prefix/suffix arrays needed — one running variable per pass."
+    },
+    "workedExample": {
+      "input": "nums = [1, 2, 3, 4]",
+      "steps": [
+        "Pass 1 (prefix): result=[1,1,2,6]. result[i] holds product of all elements before i.",
+        "Pass 2 (suffix): suffix=1. i=3: result[3]*=1=6, suffix*=4=4. i=2: result[2]*=4=8, suffix*=3=12. i=1: result[1]*=12=12, suffix*=2=24. i=0: result[0]*=24=24, suffix*=1=24.",
+        "Final result: [24, 12, 8, 6]."
+      ]
+    },
+    "whenNotToUse": [
+      "Division is allowed — you can compute total product and divide by each element (but still need special handling for zeros).",
+      "You only need a prefix sum, not product — simpler running sum suffices.",
+      "The problem is about a contiguous subarray — sliding window or Kadane's algorithm likely applies instead."
+    ]
   },
   {
     "id": "heap-top-k",
@@ -357,10 +543,26 @@
       "k-closest-points-to-origin",
       "kth-largest-element-in-an-array"
     ],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "When you need the k best elements from n, sorting everything is wasteful — you're computing n - k rankings you'll throw away. A min-heap of size k is the right tool: it always evicts the worst of your current k candidates, keeping only the best k seen so far.\n\nThe invariant is: the heap contains exactly the k best elements seen so far, with the worst of those k at the top (easy to evict). For each new element, if it beats the heap's top (the current worst of the best k), swap it in. After processing all n elements, the heap holds the answer.\n\nJavaScript has no built-in heap. For interview problems, the workaround is to build a frequency map and sort entries — O(n log n) but correct. For competitive settings, implement a min-heap or use bucket sort if values are bounded.",
+    "complexity": {
+      "time": "O(n log k)",
+      "space": "O(k)",
+      "explanation": "Each of the n elements is pushed/popped from a heap of size k — each heap operation is O(log k). Total: O(n log k). The heap holds at most k elements — O(k) space."
+    },
+    "workedExample": {
+      "input": "nums = [1,1,1,2,2,3], k = 2",
+      "steps": [
+        "Build frequency map: {1:3, 2:2, 3:1}.",
+        "Sort entries by frequency descending: [(1,3), (2,2), (3,1)].",
+        "Take first k=2 entries: [1, 2].",
+        "Return [1, 2]."
+      ]
+    },
+    "whenNotToUse": [
+      "You need all elements sorted — use a full sort instead.",
+      "k = 1 — a single linear scan finds the max/min in O(n) with O(1) space.",
+      "You need the Kth element only (not the top K) — QuickSelect gives O(n) average without the heap overhead."
+    ]
   },
   {
     "id": "backtracking",
@@ -383,10 +585,29 @@
       "BFS: explores by distance; backtracking explores by decision depth."
     ],
     "relatedProblems": ["subsets", "combination-sum"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Backtracking builds solutions incrementally and abandons a branch the moment it violates a constraint. Think of it as a depth-first search through a decision tree: at each node you make a choice, recurse, and when you return, undo that choice to explore the next option.\n\nThe critical discipline is the undo step — the 'backtrack'. Because you're mutating a shared path array, you must pop after each recursive call. Forgetting this is the most common bug: the path accumulates across recursive calls and the results are wrong.\n\nFor subsets, the decision at each step is 'include this element or skip it'. For combinations, you advance the start index to avoid reuse. For permutations, you mark elements as used. The shape of the decision tree depends on what's allowed — understanding that shape tells you exactly what to pass as parameters.",
+    "complexity": {
+      "time": "O(2^n)",
+      "space": "O(n)",
+      "explanation": "For subsets: each element is either included or not — 2^n subsets total. The call stack depth is at most n — O(n) space. Combination Sum has worse worst case depending on target/candidates ratio."
+    },
+    "workedExample": {
+      "input": "nums = [1, 2, 3] (subsets)",
+      "steps": [
+        "bt(start=0, curr=[]): push []. recurse with 1.",
+        "bt(start=1, curr=[1]): push [1]. recurse with 2.",
+        "bt(start=2, curr=[1,2]): push [1,2]. recurse with 3.",
+        "bt(start=3, curr=[1,2,3]): push [1,2,3]. loop ends. return.",
+        "Back at [1,2]: pop 3. loop ends. return. Back at [1]: pop 2. recurse with 3.",
+        "bt(start=3, curr=[1,3]): push [1,3]. return. Back at [1]: pop 3. return. Pop 1.",
+        "Continue for [2], [2,3], [3], [] — all 8 subsets collected."
+      ]
+    },
+    "whenNotToUse": [
+      "You only need the count of solutions, not the solutions themselves — DP memoization is almost always faster.",
+      "The decision tree has overlapping subproblems — memoize with DP instead of re-exploring.",
+      "Constraints are tight and backtracking's exponential worst case would time out — consider greedy or DP."
+    ]
   },
   {
     "id": "dp-1d",
@@ -414,10 +635,29 @@
       "coin-change",
       "maximum-subarray"
     ],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Dynamic programming applies when two conditions hold: optimal substructure (the best answer for size n can be built from best answers for smaller sizes) and overlapping subproblems (naïve recursion recomputes the same states). Memoization fixes the second; bottom-up DP avoids recursion overhead entirely.\n\nFor 1D problems, the state is usually a single index. You define dp[i] as 'the answer for the first i elements' and derive the recurrence — the formula expressing dp[i] in terms of earlier dp values. Then you fill the table left to right, using previously computed answers as building blocks.\n\nThe space optimization is recognizing that most 1D recurrences only look back 1 or 2 steps. Instead of a full dp array, two variables (prev1 and prev2) suffice, reducing space from O(n) to O(1).",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)",
+      "explanation": "Single pass over n elements, O(1) per step — O(n) total. With the two-variable optimization, only prev1 and prev2 are stored — O(1) space instead of O(n) for a full table."
+    },
+    "workedExample": {
+      "input": "nums = [2, 7, 9, 3, 1] (House Robber)",
+      "steps": [
+        "Recurrence: dp[i] = max(dp[i-1], dp[i-2] + nums[i]) — either skip house i, or rob it and add to the best 2 houses ago.",
+        "prev2=0, prev1=0.",
+        "i=2: curr=max(0, 0+2)=2. prev2=0, prev1=2.",
+        "i=7: curr=max(2, 0+7)=7. prev2=2, prev1=7.",
+        "i=9: curr=max(7, 2+9)=11. prev2=7, prev1=11.",
+        "i=3: curr=max(11, 7+3)=11. prev2=11, prev1=11.",
+        "i=1: curr=max(11, 11+1)=12. Answer: 12."
+      ]
+    },
+    "whenNotToUse": [
+      "No overlapping subproblems — pure recursion or greedy may be simpler.",
+      "You need all solutions, not just the optimal — backtracking enumerates solutions; DP finds the best one.",
+      "The state space is multidimensional (e.g., depends on two variables) — you need 2D DP, not 1D."
+    ]
   },
   {
     "id": "binary-search",
@@ -444,10 +684,24 @@
       "find-minimum-in-rotated-sorted-array",
       "koko-eating-bananas"
     ],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Binary search works on any search space with a monotonic property: some predicate that is false for the first part and true for the rest (or vice versa). Sorted arrays are the canonical example — elements to the left of the target are smaller, elements to the right are larger — but the technique generalizes to 'binary search on the answer' problems where the search space is a value range.\n\nThe invariant is: the answer always lies within [left, right]. At each step you compute mid and determine which half can be eliminated. If you can rule out the left half, set left = mid + 1. If you can rule out the right half, set right = mid - 1. The range shrinks by at least half each iteration — O(log n) total.\n\nThe most common bugs are integer overflow (use left + Math.floor((right - left) / 2), not (left + right) / 2) and off-by-one errors from confusing left <= right with left < right termination.",
+    "complexity": {
+      "time": "O(log n)",
+      "space": "O(1)",
+      "explanation": "Each iteration eliminates half the remaining search space — O(log n) iterations. Only left, right, and mid are tracked — O(1) space."
+    },
+    "workedExample": {
+      "input": "nums = [-1, 0, 3, 5, 9, 12], target = 9",
+      "steps": [
+        "left=0, right=5. mid=2 (val 3). 3 < 9 → left=3.",
+        "left=3, right=5. mid=4 (val 9). 9 = 9 → return 4."
+      ]
+    },
+    "whenNotToUse": [
+      "The array is unsorted and sorting it would be too expensive or destroy required information.",
+      "You need all matching indices, not just one — binary search finds one; extend with a scan for duplicates.",
+      "The search space has no monotonic property — without a clear 'eliminate this half' rule, binary search doesn't apply."
+    ]
   },
   {
     "id": "linked-list-traversal",
@@ -474,10 +728,28 @@
       "merge-two-sorted-lists",
       "reorder-list"
     ],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "Linked list problems reduce to pointer manipulation — carefully rearranging next pointers without losing any references. The golden rule is: save next before you overwrite it. In reversal, this means const next = curr.next before curr.next = prev, otherwise you lose the rest of the list.\n\nThe dummy head node is the other essential tool. For merge and construction problems, starting with a dummy eliminates the special case of the first node — you always append to cur.next, so cur is never null. Return dummy.next at the end.\n\nFor finding the midpoint or detecting cycles, the fast/slow (Floyd's) pointer pattern runs one pointer at 2x speed. When fast reaches the end, slow is at the midpoint. This is the foundation for Reorder List: find the middle, reverse the second half, then interleave.",
+    "complexity": {
+      "time": "O(n)",
+      "space": "O(1)",
+      "explanation": "A single pass over n nodes — O(n). Reversal and merge only track a constant number of pointers — O(1) extra space, in-place."
+    },
+    "workedExample": {
+      "input": "head = 1 → 2 → 3 → 4 → 5 (reverse)",
+      "steps": [
+        "prev=null, curr=1. Save next=2. Set 1.next=null. Move: prev=1, curr=2.",
+        "Save next=3. Set 2.next=1. Move: prev=2, curr=3.",
+        "Save next=4. Set 3.next=2. Move: prev=3, curr=4.",
+        "Save next=5. Set 4.next=3. Move: prev=4, curr=5.",
+        "Save next=null. Set 5.next=4. Move: prev=5, curr=null.",
+        "curr is null → done. Return prev (head of reversed list: 5→4→3→2→1)."
+      ]
+    },
+    "whenNotToUse": [
+      "Random access is needed — arrays support O(1) index access; linked lists require O(n) traversal.",
+      "You're tempted to convert to an array, process, then rebuild — this is often correct but O(n) space; check if in-place pointer manipulation is required.",
+      "The problem involves sorting — merge sort works on linked lists in O(n log n) but is complex to implement; consider if an array sort + rebuild is acceptable."
+    ]
   },
   {
     "id": "graph-traversal",
@@ -499,9 +771,27 @@
       "DFS Cycle Detection: directed graph + three-color state; Graph Traversal: undirected reachability."
     ],
     "relatedProblems": ["clone-graph"],
-    "intuition": "",
-    "complexity": null,
-    "workedExample": null,
-    "whenNotToUse": []
+    "intuition": "General graph DFS/BFS adds one essential requirement over tree DFS: cycle prevention via a visited set. Trees are acyclic by definition — no node can be reached twice. Graphs can have cycles, so without a visited check you recurse infinitely.\n\nFor cloning, the visited map does double duty: it both prevents re-processing a node AND maps old nodes to their new copies. Setting the clone in the map BEFORE recursing into neighbors is critical — if a neighbor points back to this node (a cycle), the recursive call finds the already-created clone and returns it, rather than creating a second copy.\n\nThe subtle bug is using node.val as the map key instead of the node reference. If two nodes have the same value, they'd be treated as the same node, producing a corrupted clone.",
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)",
+      "explanation": "Each node is cloned once and each edge is followed once — O(V + E). The visited/cloned map holds one entry per node — O(V) space."
+    },
+    "workedExample": {
+      "input": "Graph: 1—2, 1—4, 2—3, 3—4 (Clone Graph)",
+      "steps": [
+        "dfs(1): clone1 = {val:1, neighbors:[]}. cloned[1]=clone1 (set BEFORE recursing).",
+        "Recurse into neighbor 2: dfs(2): clone2={val:2}. cloned[2]=clone2. Recurse into 3.",
+        "dfs(3): clone3={val:3}. cloned[3]=clone3. Recurse into 4.",
+        "dfs(4): clone4={val:4}. cloned[4]=clone4. Neighbor 1: cloned[1] exists → return clone1. Neighbor 3: cloned[3] exists → return clone3. clone4.neighbors=[clone1,clone3].",
+        "Back up the chain, each node's neighbors list is filled with the correct clones.",
+        "Return clone1."
+      ]
+    },
+    "whenNotToUse": [
+      "The input is a tree — tree DFS has no cycles, so the visited check and map are unnecessary overhead.",
+      "The graph is a grid — use Grid Flood Fill with in-place mutation instead of a separate map.",
+      "You only need reachability, not a full clone — a simple visited set and DFS/BFS loop suffices."
+    ]
   }
 ]
