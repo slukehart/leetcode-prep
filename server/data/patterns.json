@@ -19,7 +19,9 @@
       "Two Sum II: input is already sorted, so two pointers are valid.",
       "3Sum: sort + fixed anchor + two pointers is better because output is values/triplets, not original indices."
     ],
-    "relatedProblems": ["two-sum"],
+    "relatedProblems": [
+      "two-sum"
+    ],
     "intuition": "The complement lookup pattern exploits a mathematical relationship: if a + b = target, then for any a you encounter, b = target - a. The question becomes 'have I already seen b?' — which a hash map answers in O(1).\n\nThe key insight is the direction of the lookup. You don't search for pairs; you turn each element into a query against your memory. As you walk the array, you ask 'does my complement exist in what I've already seen?' If yes, you're done. If no, you record this element so a future element can find it.\n\nThis is why you check BEFORE inserting: you want to find a previously seen complement, not match an element with itself. Inserting first would let index 0 match index 0 if nums[0] * 2 === target.",
     "complexity": {
       "time": "O(n)",
@@ -59,7 +61,9 @@
       "Contains Duplicate: pure existence check — a Set is enough; no counts needed.",
       "Group Anagrams: need the frequency as a canonical key, not just a count comparison."
     ],
-    "relatedProblems": ["valid-anagram"],
+    "relatedProblems": [
+      "valid-anagram"
+    ],
     "intuition": "A frequency map answers one question: how many times did each value appear? The key insight is that two strings are anagrams if and only if they have identical frequency distributions — \"anagram\" and \"nagaram\" both produce {a:3, g:1, n:1, r:1, m:1}.\n\nThe trick that makes this O(n) instead of O(n²) is that counting is a one-pass operation. You iterate s once to build the counts, then iterate t once to cancel them out. If every count returns to zero, the distributions matched exactly.\n\nWhen the key space is small and fixed (26 lowercase letters), you can use a plain array of size 26 instead of a Map — count[c.charCodeAt(0) - 'a'.charCodeAt(0)] — which is faster in practice because array access is cache-friendly and avoids hash computation.",
     "complexity": {
       "time": "O(n)",
@@ -101,7 +105,11 @@
       "Two Sum: input is unsorted and you need original indices — use hash map instead.",
       "Valid Palindrome: not sorted but still uses opposite-end convergence; non-alphanumeric skip complicates the loop."
     ],
-    "relatedProblems": ["valid-palindrome", "two-sum-ii-input-array-is-sorted", "3sum"],
+    "relatedProblems": [
+      "valid-palindrome",
+      "two-sum-ii-input-array-is-sorted",
+      "3sum"
+    ],
     "intuition": "Two pointers work because sorted order gives you a guarantee: if you move the left pointer right, the sum goes up; if you move the right pointer left, the sum goes down. This monotonic property means you never need to revisit a position — each pointer moves at most n times, giving O(n) total.\n\nThink of it as a search that uses the sort order to always make progress. If the current sum is too small, you need a bigger left element — move left forward. If the sum is too large, you need a smaller right element — move right backward. If the sum matches, you're done. You can never miss a solution because any skipped position is dominated by the current state.\n\nThe invariant is tight: the answer, if it exists, always lies within [left, right]. Once the pointers cross, all pairs have been considered.",
     "complexity": {
       "time": "O(n log n)",
@@ -189,8 +197,10 @@
       "DFS: explores one branch fully before backtracking — does not guarantee shortest path.",
       "Level Order Traversal: snapshot queue length at start of each level to group nodes."
     ],
-    "relatedProblems": ["binary-tree-level-order-traversal"],
-    "intuition": "BFS processes nodes in order of their distance from the source. Because a queue is FIFO, nodes enter in discovery order and leave in the same order — so all distance-1 nodes are processed before any distance-2 nodes. This layered processing is exactly what guarantees shortest paths in unweighted graphs.\n\nThe critical invariant is: mark nodes as visited WHEN YOU ENQUEUE THEM, not when you dequeue them. If you mark on dequeue, a node can be enqueued multiple times before it's processed, causing exponential work and incorrect results in dense graphs.\n\nFor level-order traversal, snapshot the queue length at the start of each level: the first `queueSize` dequeues belong to the current level. After processing all of them, increment the level counter.",
+    "relatedProblems": [
+      "binary-tree-level-order-traversal"
+    ],
+    "intuition": "In JavaScript, a tree is just a nested object. A TreeNode is `{ val: 3, left: { val: 9, left: null, right: null }, right: { val: 20, ... } }`. Traversing a tree is just navigating nested properties — `node.left` gives you the left subtree, `node.left.right` gives you the left child's right child. When something about tree code feels abstract, translate it back to: I am working with a nested object.\n\nBFS processes nodes in order of their distance from the source. Because a queue is FIFO, nodes enter in discovery order and leave in the same order — so all distance-1 nodes are processed before any distance-2 nodes. This layered processing is exactly what guarantees shortest paths in unweighted graphs.\n\nThe critical invariant is: mark nodes as visited WHEN YOU ENQUEUE THEM, not when you dequeue them. If you mark on dequeue, a node can be enqueued multiple times before it's processed, causing exponential work and incorrect results in dense graphs.\n\nFor level-order traversal, snapshot the queue length at the start of each level: the first `queueSize` dequeues belong to the current level. After processing all of them, increment the level counter.",
     "complexity": {
       "time": "O(V + E)",
       "space": "O(V)",
@@ -231,7 +241,9 @@
       "BFS for cycle detection: works for undirected graphs but not directed.",
       "Topological sort (Kahn's): BFS-based alternative using in-degree counts."
     ],
-    "relatedProblems": ["course-schedule"],
+    "relatedProblems": [
+      "course-schedule"
+    ],
     "intuition": "To detect a cycle in a directed graph you need three states, not two. A boolean 'visited' isn't enough because it can't distinguish between 'currently on the recursion path' and 'already fully explored'. The three-color system captures this: 0 = unseen, 1 = currently visiting (on the stack), 2 = done (proven safe).\n\nA cycle exists when DFS reaches a node with state 1 — you've looped back to something on the current path. When state is 2, you've already proven that subtree is cycle-free, so you can return immediately without re-exploring it. This is why three-color DFS handles shared subgraphs efficiently.\n\nIf you only have two colors, you can't tell whether a visited neighbor is an ancestor (cycle) or just a previously explored node in a different branch (no cycle). That ambiguity is exactly what state 1 vs state 2 resolves.",
     "complexity": {
       "time": "O(V + E)",
@@ -275,7 +287,9 @@
       "Frequency Map: use when counts matter, not just presence.",
       "Hash Map Complement: use when you need to find a matching pair, not just any duplicate."
     ],
-    "relatedProblems": ["contains-duplicate"],
+    "relatedProblems": [
+      "contains-duplicate"
+    ],
     "intuition": "A Set is the minimal data structure for existence queries. Its only job is to answer 'have I seen this before?' in O(1). When a problem only asks about presence — not count, not position, not order — a Set is always the right choice.\n\nThe pattern is almost mechanical: walk the collection, ask the Set if the current element is already there. If yes, you've found your duplicate (or match). If no, add it and continue. The Set grows as you walk, so you're always asking about the past.\n\nThe mistake beginners make is reaching for a frequency map or sorting when the problem doesn't require counts. Sorting is O(n log n) and destroys order; a frequency map is O(n) but carries overhead you don't need. When only existence matters, use a Set.",
     "complexity": {
       "time": "O(n)",
@@ -316,7 +330,9 @@
       "Frequency Map: compares two strings directly; Canonical Key Grouping groups many strings.",
       "Set Membership: checks existence; Canonical Key Grouping produces grouped output."
     ],
-    "relatedProblems": ["group-anagrams"],
+    "relatedProblems": [
+      "group-anagrams"
+    ],
     "intuition": "Grouping requires a canonical key — a normalized form that all equivalent elements share. For anagrams, sorting the characters of a word always produces the same result regardless of letter order: 'eat', 'ate', and 'tea' all sort to 'aet'. Use that sorted form as the map key, and push each original word into the bucket at that key.\n\nThe power of this pattern is that you never compare two words directly. Instead, you derive a canonical representative and let the map handle the grouping. This generalizes beyond anagrams: any equivalence relation that can be expressed as a deterministic transformation produces a canonical key.\n\nA subtle failure mode is key collision in frequency-array representations. If you use a comma-separated count array like '1,0,1,0,...' as the key, be careful that position 10 doesn't parse ambiguously with positions 1 and 0 adjacent. A separator like '#' between counts ('1#0#1#') avoids this.",
     "complexity": {
       "time": "O(n · k log k)",
@@ -361,7 +377,10 @@
       "BFS Queue: FIFO; use for level-order traversal, not matching.",
       "Min Stack: augmented stack for O(1) min queries — different from matching."
     ],
-    "relatedProblems": ["valid-parentheses", "min-stack"],
+    "relatedProblems": [
+      "valid-parentheses",
+      "min-stack"
+    ],
     "intuition": "A stack is LIFO — last in, first out. This mirrors nested structures perfectly: the most recently opened bracket must be the next one closed. When you see a closing bracket, you don't compare it against all previous opens — you compare it against the most recent unmatched open, which is exactly what the stack top gives you.\n\nThe invariant is: the stack always contains the unmatched opens in the order they appeared, most recent on top. When a close arrives, pop and verify. If they match, that pair is resolved and the stack top now represents the next unmatched open. If they don't match, it's invalid.\n\nDon't forget the empty-stack check at the end: an empty string of opens with no corresponding closes leaves them all on the stack. A valid sequence leaves the stack empty.",
     "complexity": {
       "time": "O(n)",
@@ -412,7 +431,7 @@
       "same-tree",
       "validate-binary-search-tree"
     ],
-    "intuition": "Recursive tree DFS is elegant because the tree's structure mirrors the recursion's structure. Each call handles exactly one node: check the base case (null → return 0, true, or null), recurse into children, and combine results. The call stack implicitly tracks the path from root to current node.\n\nThe choice of traversal order matters: post-order (process children before the current node) is used when the answer at a node depends on its subtree — max depth, diameter, path sum. Pre-order (process current node before children) is used for structural mutations — invert, serialize, clone.\n\nThe null base case is the most important line. It handles both empty trees and the leaf-node-children case. Always handle null before accessing node.left or node.right.",
+    "intuition": "In JavaScript, a tree is just a nested object. A TreeNode is `{ val: 3, left: { val: 9, left: null, right: null }, right: { val: 20, ... } }`. Traversing a tree is just navigating nested properties — `node.left` gives you the left subtree, `node.left.right` gives you the left child's right child. When something about tree code feels abstract, translate it back to: I am working with a nested object.\n\nRecursive tree DFS is elegant because the tree's structure mirrors the recursion's structure. Each call handles exactly one node: check the base case (null → return 0, true, or null), recurse into children, and combine results. The call stack implicitly tracks the path from root to current node.\n\nThe choice of traversal order matters: post-order (process children before the current node) is used when the answer at a node depends on its subtree — max depth, diameter, path sum. Pre-order (process current node before children) is used for structural mutations — invert, serialize, clone.\n\nThe null base case is the most important line. It handles both empty trees and the leaf-node-children case. Always handle null before accessing node.left or node.right.",
     "complexity": {
       "time": "O(n)",
       "space": "O(h)",
@@ -455,7 +474,9 @@
       "Clone Graph: graph nodes, not grid cells — use adjacency list + visited map.",
       "Tree DFS: tree has no cycles; grid may have 4-directional neighbors."
     ],
-    "relatedProblems": ["number-of-islands"],
+    "relatedProblems": [
+      "number-of-islands"
+    ],
     "intuition": "A grid is just a graph where each cell is a node and edges connect 4-directional neighbors. Flood fill is DFS (or BFS) from a source cell, marking all reachable same-value cells as visited by mutating them in place.\n\nThe key optimization is the in-place mutation: rather than maintaining a separate visited array, you overwrite the cell value as you visit it ('1' → '0' for Number of Islands). This means the visited check and the mark step are the same operation.\n\nThe recursion base case must check bounds and cell value BEFORE accessing the array. Wrong order causes index-out-of-bounds errors. The correct pattern: if out-of-bounds OR cell is not '1', return immediately.",
     "complexity": {
       "time": "O(rows × cols)",
@@ -498,7 +519,9 @@
       "Running sum / prefix sum: for addition instead of multiplication.",
       "Sliding window: for contiguous subarray problems, not element-exclusion products."
     ],
-    "relatedProblems": ["product-of-array-except-self"],
+    "relatedProblems": [
+      "product-of-array-except-self"
+    ],
     "intuition": "The result at position i is the product of everything to i's left times everything to i's right. The challenge is computing that without using the element itself — and without division, which fails when zeros are present.\n\nThe insight is that you can precompute these two halves independently. A left-to-right pass builds prefix[i] = product of all elements before i. A right-to-left pass builds suffix[i] = product of all elements after i. Multiply them: result[i] = prefix[i] * suffix[i].\n\nThe space optimization is to merge the two passes: use the result array to accumulate the prefix product during the first pass, then multiply by a running suffix variable during the second pass. This avoids the separate prefix/suffix arrays, reducing space to O(1) beyond the output.",
     "complexity": {
       "time": "O(n)",
@@ -584,7 +607,10 @@
       "DP: memoize overlapping subproblems; backtracking enumerates all solutions.",
       "BFS: explores by distance; backtracking explores by decision depth."
     ],
-    "relatedProblems": ["subsets", "combination-sum"],
+    "relatedProblems": [
+      "subsets",
+      "combination-sum"
+    ],
     "intuition": "Backtracking builds solutions incrementally and abandons a branch the moment it violates a constraint. Think of it as a depth-first search through a decision tree: at each node you make a choice, recurse, and when you return, undo that choice to explore the next option.\n\nThe critical discipline is the undo step — the 'backtrack'. Because you're mutating a shared path array, you must pop after each recursive call. Forgetting this is the most common bug: the path accumulates across recursive calls and the results are wrong.\n\nFor subsets, the decision at each step is 'include this element or skip it'. For combinations, you advance the start index to avoid reuse. For permutations, you mark elements as used. The shape of the decision tree depends on what's allowed — understanding that shape tells you exactly what to pass as parameters.",
     "complexity": {
       "time": "O(2^n)",
@@ -770,7 +796,9 @@
       "Grid Flood Fill: cells in a grid; Graph Traversal: nodes with arbitrary adjacency.",
       "DFS Cycle Detection: directed graph + three-color state; Graph Traversal: undirected reachability."
     ],
-    "relatedProblems": ["clone-graph"],
+    "relatedProblems": [
+      "clone-graph"
+    ],
     "intuition": "General graph DFS/BFS adds one essential requirement over tree DFS: cycle prevention via a visited set. Trees are acyclic by definition — no node can be reached twice. Graphs can have cycles, so without a visited check you recurse infinitely.\n\nFor cloning, the visited map does double duty: it both prevents re-processing a node AND maps old nodes to their new copies. Setting the clone in the map BEFORE recursing into neighbors is critical — if a neighbor points back to this node (a cycle), the recursive call finds the already-created clone and returns it, rather than creating a second copy.\n\nThe subtle bug is using node.val as the map key instead of the node reference. If two nodes have the same value, they'd be treated as the same node, producing a corrupted clone.",
     "complexity": {
       "time": "O(V + E)",
