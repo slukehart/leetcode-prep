@@ -173,7 +173,7 @@
     "difficulty": "medium",
     "pattern": "dfs-cycle-detection",
     "leetcodeUrl": "https://leetcode.com/problems/course-schedule/",
-    "track": ["mastery"]
+    "track": ["mastery", "senior"]
   },
   {
     "id": "subsets",
@@ -373,6 +373,37 @@
     "pattern": "data-structure-design",
     "leetcodeUrl": "https://leetcode.com/problems/lru-cache/",
     "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "word-ladder",
+    "title": "Word Ladder",
+    "difficulty": "hard",
+    "pattern": "bfs-queue",
+    "leetcodeUrl": "https://leetcode.com/problems/word-ladder/",
+    "track": [
+      "senior"
+    ]
+  },
+  {
+    "id": "trapping-rain-water",
+    "title": "Trapping Rain Water",
+    "difficulty": "hard",
+    "pattern": "two-pointers",
+    "leetcodeUrl": "https://leetcode.com/problems/trapping-rain-water/",
+    "track": [
+      "senior"
+    ]
+  },
+  {
+    "id": "logger-rate-limiter",
+    "title": "Logger Rate Limiter",
+    "difficulty": "easy",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/logger-rate-limiter/",
+    "track": [
+      "senior",
       "design"
     ]
   }

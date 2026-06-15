@@ -545,5 +545,85 @@
         ]
       }
     ]
+  },
+  {
+    "id": "senior",
+    "title": "Senior (L5) Loop",
+    "groups": [
+      {
+        "id": "senior-system-design",
+        "title": "System Design",
+        "subtitle": "See 11 System Design Track.md — 45-60 min, you drive",
+        "items": [
+          {
+            "id": "senior-sd-framework",
+            "label": "Study: system design framework + 4-competency rubric"
+          },
+          {
+            "id": "senior-sd-url",
+            "label": "Practice: Design a URL shortener (worksheet + self-score)"
+          },
+          {
+            "id": "senior-sd-chat",
+            "label": "Practice: Design a chat service for millions"
+          },
+          {
+            "id": "senior-sd-feed",
+            "label": "Practice: Design YouTube / a news feed"
+          }
+        ]
+      },
+      {
+        "id": "senior-coding",
+        "title": "Senior-bar Coding",
+        "subtitle": "Medium-hard; clean code + error handling in the same time",
+        "items": [
+          {
+            "id": "senior-c-courseschedule",
+            "label": "Course Schedule",
+            "problemId": "course-schedule"
+          },
+          {
+            "id": "senior-c-wordladder",
+            "label": "Word Ladder",
+            "problemId": "word-ladder"
+          },
+          {
+            "id": "senior-c-rainwater",
+            "label": "Trapping Rain Water",
+            "problemId": "trapping-rain-water"
+          },
+          {
+            "id": "senior-c-logger",
+            "label": "Logger Rate Limiter",
+            "problemId": "logger-rate-limiter"
+          },
+          {
+            "id": "senior-c-lru",
+            "label": "LRU Cache (canonical senior design)",
+            "problemId": "lru-cache"
+          }
+        ]
+      },
+      {
+        "id": "senior-ai-era",
+        "title": "AI / LLM-era",
+        "subtitle": "See 12 AI-Era Interview Track.md",
+        "items": [
+          {
+            "id": "senior-ai-assisted",
+            "label": "Study: AI-assisted coding interviews (prep both modes)"
+          },
+          {
+            "id": "senior-ai-genai",
+            "label": "Practice: Design a RAG document search (worksheet + self-score)"
+          },
+          {
+            "id": "senior-ai-chatbot",
+            "label": "Practice: Design an AI chatbot"
+          }
+        ]
+      }
+    ]
   }
 ]
