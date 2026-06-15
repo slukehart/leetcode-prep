@@ -34,8 +34,8 @@ export interface Problem {
   title: string
   difficulty: 'easy' | 'medium' | 'hard'
   pattern: string       // pattern id
-  leetcodeUrl: string
-  track: ('sprint' | 'mastery')[]
+  leetcodeUrl?: string  // optional — design problems may have no LeetCode page
+  track: ('sprint' | 'mastery' | 'design' | 'senior')[]
 }
 
 export interface PathItem {
@@ -53,7 +53,7 @@ export interface PathGroup {
 }
 
 export interface CurriculumTrack {
-  id: 'sprint' | 'mastery'
+  id: 'sprint' | 'mastery' | 'design' | 'senior'
   title: string
   groups: PathGroup[]
 }
