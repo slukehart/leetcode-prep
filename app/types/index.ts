@@ -90,4 +90,5 @@ export interface Content {
   patterns: Pattern[]
   problems: Problem[]
   curriculum: CurriculumTrack[]
+  scaffolds: Record<string, string>  // problemId -> copy-paste JS scaffold (stub + test harness)
 }

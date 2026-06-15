@@ -37,6 +37,7 @@ function isActive(to: string) {
 const links = [
   { label: 'Study Path', to: '/path' },
   { label: 'Patterns', to: '/patterns' },
+  { label: 'Practice', to: '/practice' },
   { label: 'Tracker', to: '/tracker' },
 ]
 </script>
