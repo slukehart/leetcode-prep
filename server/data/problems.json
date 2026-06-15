@@ -141,7 +141,7 @@
     "difficulty": "medium",
     "pattern": "stack-matching",
     "leetcodeUrl": "https://leetcode.com/problems/min-stack/",
-    "track": ["mastery"]
+    "track": ["mastery", "design"]
   },
   {
     "id": "same-tree",
@@ -286,5 +286,94 @@
     "pattern": "heap-top-k",
     "leetcodeUrl": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
     "track": ["mastery"]
+  },
+  {
+    "id": "design-queue",
+    "title": "Implement Queue (factory/closure)",
+    "difficulty": "easy",
+    "pattern": "data-structure-design",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "queue-using-stacks",
+    "title": "Implement Queue using Stacks",
+    "difficulty": "easy",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/implement-queue-using-stacks/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "stack-using-queues",
+    "title": "Implement Stack using Queues",
+    "difficulty": "easy",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/implement-stack-using-queues/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "design-circular-queue",
+    "title": "Design Circular Queue",
+    "difficulty": "medium",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/design-circular-queue/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "design-hashmap",
+    "title": "Design HashMap",
+    "difficulty": "easy",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/design-hashmap/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "implement-trie",
+    "title": "Implement Trie (Prefix Tree)",
+    "difficulty": "medium",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "design-browser-history",
+    "title": "Design Browser History",
+    "difficulty": "medium",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/design-browser-history/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "time-based-kv-store",
+    "title": "Time Based Key-Value Store",
+    "difficulty": "medium",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/time-based-key-value-store/",
+    "track": [
+      "design"
+    ]
+  },
+  {
+    "id": "lru-cache",
+    "title": "LRU Cache",
+    "difficulty": "medium",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/lru-cache/",
+    "track": [
+      "design"
+    ]
   }
 ]
