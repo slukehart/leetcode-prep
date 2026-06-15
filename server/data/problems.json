@@ -406,5 +406,15 @@
       "senior",
       "design"
     ]
+  },
+  {
+    "id": "insert-delete-getrandom",
+    "title": "Insert Delete GetRandom O(1)",
+    "difficulty": "medium",
+    "pattern": "data-structure-design",
+    "leetcodeUrl": "https://leetcode.com/problems/insert-delete-getrandom-o1/",
+    "track": [
+      "design"
+    ]
   }
 ]

@@ -507,6 +507,11 @@
             "id": "design-h-timekv",
             "label": "Time Based Key-Value Store",
             "problemId": "time-based-kv-store"
+          },
+          {
+            "id": "design-h-randomizedset",
+            "label": "Insert Delete GetRandom O(1)",
+            "problemId": "insert-delete-getrandom"
           }
         ]
       },
