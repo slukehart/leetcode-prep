@@ -821,5 +821,55 @@
       "The graph is a grid — use Grid Flood Fill with in-place mutation instead of a separate map.",
       "You only need reachability, not a full clone — a simple visited set and DFS/BFS loop suffices."
     ]
+  },
+  {
+    "id": "data-structure-design",
+    "name": "Data Structure Design / Implementation",
+    "triggers": [
+      "The prompt says 'implement' or 'design' a structure (queue, stack, cache, map, trie).",
+      "You must expose an API (methods) with specific return values and error behavior.",
+      "A target complexity per operation is stated or implied (often amortized O(1))."
+    ],
+    "whatItGives": "A repeatable method for building a correct data structure under interview pressure: API-first, invariants, per-operation complexity, edge cases, test each operation.",
+    "invariant": "Every public operation leaves the internal state in a valid form that all other operations rely on (e.g. head <= tail; size === number of live entries).",
+    "jsSkeleton": "// Factory / closure form (called WITHOUT `new`)\nfunction Queue() {\n  const list = new Map(); // index -> value\n  let head = 0, tail = 0;\n  return {\n    count() { return list.size; },           // .size is a PROPERTY\n    peek() {\n      if (list.size === 0) throw new Error('Queue is empty');\n      return list.get(head);\n    },\n    push(value) { list.set(tail, value); tail += 1; },\n    pop() {\n      if (list.size === 0) throw new Error('Queue is empty');\n      const v = list.get(head); list.delete(head); head += 1; return v;\n    },\n  }; // <-- MUST return the methods object\n}\n\n// Class form (what LeetCode expects)\nclass QueueClass {\n  #list = new Map(); #head = 0; #tail = 0;\n  count() { return this.#list.size; }\n  peek() { if (!this.#list.size) throw new Error('Queue is empty'); return this.#list.get(this.#head); }\n  push(v) { this.#list.set(this.#tail, v); this.#tail += 1; }\n  pop() { if (!this.#list.size) throw new Error('Queue is empty'); const v = this.#list.get(this.#head); this.#list.delete(this.#head); this.#head += 1; return v; }\n}",
+    "failureModes": [
+      "Factory form: forgetting to `return` the methods object, so the constructor returns undefined.",
+      "Calling `Map.size()` — size is a property, not a method.",
+      "Using `array.shift()` for dequeue — it is O(n) because it reindexes every element.",
+      "Throwing `Error` instead of `new Error('message')`.",
+      "Growing a head index on a plain array without ever freeing memory."
+    ],
+    "contrastCases": [
+      "A plain array used as a stack (push/pop at the end) is already O(1) — no custom structure needed.",
+      "LRU Cache needs O(1) eviction, so a plain Map alone is not enough; pair it with a doubly-linked list."
+    ],
+    "relatedProblems": [
+      "design-queue",
+      "min-stack",
+      "lru-cache"
+    ],
+    "intuition": "Design problems are graded on whether your structure is correct across EVERY operation at the target complexity — not on a clever one-off trick. The method is always the same: (1) write the API and what each method returns/throws; (2) name the state and the invariant that ties operations together; (3) pick the per-operation complexity target and choose storage that hits it; (4) enumerate edge cases (empty, single element, capacity full); (5) test each operation in sequence.\n\nFor a queue specifically, the whole point is 'why not a plain array?'. `array.push()` is O(1) but `array.shift()` is O(n) because removing the front reindexes everything. Head/tail indexing fixes this: never shift; keep two integer cursors that only move forward, store values keyed by an increasing index, and delete the consumed key. Now push and pop are both O(1).\n\nThe other trap is idiom. A factory function (`function Queue(){...}`, called without `new`) only exposes methods if you explicitly `return` an object of closures; a class exposes them via the prototype and is instantiated with `new`. They are the same structure, exposed two different ways — train both.",
+    "complexity": {
+      "time": "O(1) per operation (push, pop, peek, count) for a well-designed queue/stack/map.",
+      "space": "O(n) for n live elements.",
+      "explanation": "Head/tail indexing makes enqueue and dequeue O(1). Deleting the consumed key keeps space at O(n) live entries rather than leaking."
+    },
+    "workedExample": {
+      "input": "Queue(): push(1), push(2), peek(), pop(), count(), pop(), pop()",
+      "steps": [
+        "push(1): list={0:1}, head=0, tail=1",
+        "push(2): list={0:1,1:2}, head=0, tail=2",
+        "peek(): returns list.get(head=0) = 1 (no mutation)",
+        "pop(): returns 1, delete key 0 -> list={1:2}, head=1",
+        "count(): list.size = 1",
+        "pop(): returns 2, delete key 1 -> list={}, head=2",
+        "pop(): list.size === 0 -> throw new Error('Queue is empty')"
+      ]
+    },
+    "whenNotToUse": [
+      "When a built-in already meets the complexity target (array as a stack).",
+      "When the problem is an algorithm over an existing structure, not building one."
+    ]
   }
 ]
