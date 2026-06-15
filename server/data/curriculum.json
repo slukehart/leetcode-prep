@@ -460,5 +460,90 @@
         ]
       }
     ]
+  },
+  {
+    "id": "design",
+    "title": "Data Structure Design & Implementation",
+    "groups": [
+      {
+        "id": "design-queues-stacks",
+        "title": "Queues & Stacks",
+        "subtitle": "API-first, O(1) ops, factory vs class",
+        "items": [
+          {
+            "id": "design-q-queue",
+            "label": "Implement Queue (factory/closure)",
+            "problemId": "design-queue",
+            "patternId": "data-structure-design"
+          },
+          {
+            "id": "design-q-qstacks",
+            "label": "Implement Queue using Stacks",
+            "problemId": "queue-using-stacks"
+          },
+          {
+            "id": "design-q-squeues",
+            "label": "Implement Stack using Queues",
+            "problemId": "stack-using-queues"
+          },
+          {
+            "id": "design-q-minstack",
+            "label": "Min Stack",
+            "problemId": "min-stack"
+          }
+        ]
+      },
+      {
+        "id": "design-hash",
+        "title": "Hash-based",
+        "subtitle": "Designing maps and versioned stores",
+        "items": [
+          {
+            "id": "design-h-hashmap",
+            "label": "Design HashMap",
+            "problemId": "design-hashmap"
+          },
+          {
+            "id": "design-h-timekv",
+            "label": "Time Based Key-Value Store",
+            "problemId": "time-based-kv-store"
+          }
+        ]
+      },
+      {
+        "id": "design-trees",
+        "title": "Trees / Tries",
+        "subtitle": "Node-tree structures",
+        "items": [
+          {
+            "id": "design-t-trie",
+            "label": "Implement Trie (Prefix Tree)",
+            "problemId": "implement-trie"
+          }
+        ]
+      },
+      {
+        "id": "design-composite",
+        "title": "Composite (eviction & history)",
+        "subtitle": "Combining structures for O(1) guarantees",
+        "items": [
+          {
+            "id": "design-c-circular",
+            "label": "Design Circular Queue",
+            "problemId": "design-circular-queue"
+          },
+          {
+            "id": "design-c-browser",
+            "label": "Design Browser History",
+            "problemId": "design-browser-history"
+          },
+          {
+            "id": "design-c-lru",
+            "label": "LRU Cache",
+            "problemId": "lru-cache"
+          }
+        ]
+      }
+    ]
   }
 ]
