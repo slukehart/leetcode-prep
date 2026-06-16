@@ -38,6 +38,35 @@ export interface Problem {
   track: ('sprint' | 'mastery' | 'design' | 'senior')[]
 }
 
+export type BugType =
+  | 'off-by-one'
+  | 'mutation-during-iteration'
+  | 'wrong-base-case'
+  | 'integer-overflow'
+  | 'wrong-comparison'
+  | 'uninitialized-accumulator'
+  | 'wrong-pointer-update'
+  | 'missing-visited-check'
+
+export interface DebugChoice {
+  text: string
+  correct: boolean
+}
+
+export interface DebugExercise {
+  id: string
+  title: string
+  patternId: string                          // existing pattern id
+  bugType: BugType
+  difficulty: 'easy' | 'medium' | 'hard'
+  buggyCode: string
+  failingInput: string                        // e.g. "nums = [3,3], target = 6"
+  expected: string                            // correct output, e.g. "[0,1]"
+  actual: string                              // buggy output, e.g. "[] (or throws)"
+  choices: DebugChoice[]                      // 3-4; exactly one correct: true
+  explanation: string                         // revealed after answering
+}
+
 export interface PathItem {
   id: string
   label: string
@@ -91,4 +120,5 @@ export interface Content {
   problems: Problem[]
   curriculum: CurriculumTrack[]
   scaffolds: Record<string, string>  // problemId -> copy-paste JS scaffold (stub + test harness)
+  debugExercises: DebugExercise[]
 }
