@@ -16,5 +16,221 @@
       { "text": "The comparison `nums[mid] < target` should be `nums[mid] <= target`.", "correct": false }
     ],
     "explanation": "With `lo < hi`, when the search space narrows to one element (`lo === hi`) the loop stops without testing `nums[lo]`. For target 5 in [1,3,5], lo and hi converge on index 2 but the loop never checks it. The fix is `while (lo <= hi)`."
+  },
+  {
+    "id": "binary-search-mid-overflow",
+    "title": "Binary Search on Answer — midpoint overflows and loops forever",
+    "patternId": "binary-search",
+    "bugType": "integer-overflow",
+    "difficulty": "medium",
+    "buggyCode": "// Find the smallest x in [1, 2_000_000_000] with x >= target.\nfunction firstAtLeast(target) {\n  let lo = 1, hi = 2000000000, ans = -1, iters = 0;\n  while (lo <= hi) {\n    if (++iters > 200) return 'INFINITE_LOOP'; // safety guard so this is runnable\n    const mid = (lo + hi) >> 1;   // BUG: `>>` coerces to 32-bit; lo+hi past 2^31 goes negative\n    if (mid >= target) { ans = mid; hi = mid - 1; }\n    else lo = mid + 1;\n  }\n  return ans;\n}",
+    "failingInput": "target = 1500000000",
+    "expected": "1500000000",
+    "actual": "INFINITE_LOOP (mid becomes negative once lo+hi exceeds 2^31, so lo never converges)",
+    "choices": [
+      { "text": "`(lo + hi) >> 1` truncates the sum to a signed 32-bit integer; once `lo + hi` exceeds 2^31 the midpoint goes negative, so the range never converges.", "correct": true },
+      { "text": "The loop condition should be `lo < hi`; using `lo <= hi` causes one extra iteration that never terminates.", "correct": false },
+      { "text": "`ans` is uninitialized for the failing case, so the comparison `mid >= target` reads a stale accumulator.", "correct": false },
+      { "text": "The comparison should be `mid > target` instead of `mid >= target` to find the first qualifying value.", "correct": false }
+    ],
+    "explanation": "JavaScript numbers are 64-bit floats, but the bitwise `>>` operator first coerces its operands to signed 32-bit integers. When `lo + hi` exceeds 2,147,483,647 the result wraps to a negative `mid`, so `mid >= target` is false and `lo` is set to a negative value — the range can never close. The fix is `lo + ((hi - lo) >> 1)`, which never overflows because `hi - lo` stays in range."
+  },
+  {
+    "id": "sliding-window-shrink",
+    "title": "Longest Substring — window shrinks on the wrong threshold",
+    "patternId": "sliding-window",
+    "bugType": "wrong-comparison",
+    "difficulty": "medium",
+    "buggyCode": "function lengthOfLongestSubstring(s) {\n  let left = 0, best = 0;\n  const freq = new Map();\n  for (let right = 0; right < s.length; right++) {\n    const c = s[right];\n    freq.set(c, (freq.get(c) ?? 0) + 1);\n    while (freq.get(c) > 2) {   // BUG: should shrink while > 1\n      const rm = s[left];\n      freq.set(rm, freq.get(rm) - 1);\n      left++;\n    }\n    best = Math.max(best, right - left + 1);\n  }\n  return best;\n}",
+    "failingInput": "s = \"abba\"",
+    "expected": "2",
+    "actual": "4",
+    "choices": [
+      { "text": "The shrink condition `freq.get(c) > 2` permits one duplicate character inside the window, so the window is never narrowed when a repeat first appears.", "correct": true },
+      { "text": "`best` is initialized to 0 instead of 1, so single-character windows are undercounted.", "correct": false },
+      { "text": "The window mutates `freq` while iterating over it, skipping the element that should be removed.", "correct": false },
+      { "text": "`left` advances by one when it should advance to `right`, an off-by-one in the pointer update.", "correct": false }
+    ],
+    "explanation": "A 'no repeating characters' window is valid only when every count is 1. Shrinking while `freq.get(c) > 2` tolerates a character appearing twice, so for \"abba\" the window grows to the whole string (length 4) instead of stopping at 2. The fix is `while (freq.get(c) > 1)`."
+  },
+  {
+    "id": "sliding-window-stale-max",
+    "title": "Longest Substring — wrong initial best breaks empty input",
+    "patternId": "sliding-window",
+    "bugType": "uninitialized-accumulator",
+    "difficulty": "easy",
+    "buggyCode": "function lengthOfLongestSubstring(s) {\n  let left = 0, best = 1;   // BUG: should be 0\n  const freq = new Map();\n  for (let right = 0; right < s.length; right++) {\n    const c = s[right];\n    freq.set(c, (freq.get(c) ?? 0) + 1);\n    while (freq.get(c) > 1) {\n      const rm = s[left];\n      freq.set(rm, freq.get(rm) - 1);\n      left++;\n    }\n    best = Math.max(best, right - left + 1);\n  }\n  return best;\n}",
+    "failingInput": "s = \"\"",
+    "expected": "0",
+    "actual": "1",
+    "choices": [
+      { "text": "`best` is seeded with 1, so an empty string returns 1 even though the loop body never runs to correct it.", "correct": true },
+      { "text": "The loop should be `right <= s.length`; the off-by-one skips the final character.", "correct": false },
+      { "text": "The shrink condition `freq.get(c) > 1` is too strict and should be `>= 1`.", "correct": false },
+      { "text": "`left` is never reset between windows, so stale state from a previous call leaks in.", "correct": false }
+    ],
+    "explanation": "The accumulator `best` should start at the identity value 0 (a window of zero length). Seeding it with 1 assumes at least one character exists. For an empty string the `for` loop never executes, so the bogus initial 1 is returned instead of 0. The fix is `let best = 0`."
+  },
+  {
+    "id": "bfs-no-visited",
+    "title": "BFS — neighbors enqueued without a visited check",
+    "patternId": "bfs-queue",
+    "bugType": "missing-visited-check",
+    "difficulty": "medium",
+    "buggyCode": "function bfsCount(start, adj, n) {\n  const queue = [start];\n  let processed = 0, guard = 0;\n  while (queue.length > 0) {\n    if (++guard > 1000) return 'INFINITE_LOOP'; // safety guard so this is runnable\n    const node = queue.shift();\n    processed++;\n    for (const nei of adj[node]) {\n      queue.push(nei);   // BUG: never checks or marks visited\n    }\n  }\n  return processed;\n}",
+    "failingInput": "adj = [[1,2],[0,2],[0,1]] (triangle), start = 0",
+    "expected": "3",
+    "actual": "INFINITE_LOOP (already-seen nodes are re-enqueued endlessly)",
+    "choices": [
+      { "text": "Neighbors are enqueued unconditionally with no visited set, so in a cyclic graph nodes are re-enqueued forever.", "correct": true },
+      { "text": "Visited is marked on dequeue instead of on enqueue, allowing a few duplicate entries.", "correct": false },
+      { "text": "Using `queue.shift()` makes this a stack; it should use `queue.pop()` for breadth-first order.", "correct": false },
+      { "text": "`processed` starts at 0 when it should start at 1 to count the start node.", "correct": false }
+    ],
+    "explanation": "BFS must track which nodes have been discovered. With no visited array, every cycle (0→1→0→...) re-enqueues nodes endlessly. The fix is to maintain a `visited` array and only enqueue a neighbor when it has not yet been marked — marking it at the moment of enqueue."
+  },
+  {
+    "id": "bfs-mark-on-dequeue",
+    "title": "BFS — marking visited on dequeue overcounts diamond paths",
+    "patternId": "bfs-queue",
+    "bugType": "missing-visited-check",
+    "difficulty": "medium",
+    "buggyCode": "function countReachable(start, adj, n) {\n  const visited = new Array(n).fill(false);\n  const queue = [start];\n  let count = 0;\n  while (queue.length > 0) {\n    const node = queue.shift();\n    visited[node] = true;   // BUG: marked on dequeue, not on enqueue\n    count++;\n    for (const nei of adj[node]) {\n      if (!visited[nei]) queue.push(nei); // nei still unmarked when two parents enqueue it\n    }\n  }\n  return count;\n}",
+    "failingInput": "adj = [[1,2],[3],[3],[]] (diamond 0->1,0->2,1->3,2->3), start = 0",
+    "expected": "4",
+    "actual": "5",
+    "choices": [
+      { "text": "Marking visited on dequeue leaves a node unmarked while it sits in the queue, so both parents in a diamond enqueue it and it is processed twice.", "correct": true },
+      { "text": "There is no visited array at all, so the traversal loops forever on the cycle.", "correct": false },
+      { "text": "`count` is initialized to 0 instead of 1, so the start node is undercounted.", "correct": false },
+      { "text": "`queue.shift()` returns elements in the wrong order, double-visiting the deepest node.", "correct": false }
+    ],
+    "explanation": "Node 3 has two parents (1 and 2). Because visited is set only when a node is dequeued, node 3 is still unmarked when node 1 enqueues it AND when node 2 enqueues it — so it lands in the queue twice and is counted twice (5 instead of 4). The fix is to mark a node visited at the moment you enqueue it."
+  },
+  {
+    "id": "linkedlist-reverse-lost-next",
+    "title": "Reverse Linked List — overwrites next before saving it",
+    "patternId": "linked-list-traversal",
+    "bugType": "wrong-pointer-update",
+    "difficulty": "medium",
+    "buggyCode": "// node = { val, next }\nfunction reverse(head) {\n  let prev = null, curr = head;\n  while (curr) {\n    curr.next = prev;   // BUG: clobbers curr.next before the next node is saved\n    prev = curr;\n    curr = curr.next;   // now reads the just-overwritten pointer (= prev)\n  }\n  return prev;\n}",
+    "failingInput": "list 1 -> 2 -> 3",
+    "expected": "3 -> 2 -> 1",
+    "actual": "1 (the rest of the list is lost)",
+    "choices": [
+      { "text": "`curr.next` is reassigned to `prev` before the original next node is saved, so `curr = curr.next` walks backward instead of forward and the tail is dropped.", "correct": true },
+      { "text": "`prev` should be initialized to `head` instead of `null`, causing the first node to be lost.", "correct": false },
+      { "text": "The loop condition `while (curr)` should be `while (curr.next)`, an off-by-one that skips the last node.", "correct": false },
+      { "text": "Reversing mutates the list while iterating it, so nodes are visited out of order.", "correct": false }
+    ],
+    "explanation": "Reversal needs a temporary to hold the next node before rewiring: `const next = curr.next; curr.next = prev; prev = curr; curr = next;`. Here `curr.next = prev` runs first, so the subsequent `curr = curr.next` reads the pointer that was just overwritten and the traversal collapses after the first node, returning just `1`."
+  },
+  {
+    "id": "linkedlist-cycle-pointer",
+    "title": "Cycle Detection — fast pointer moves one step, not two",
+    "patternId": "linked-list-traversal",
+    "bugType": "wrong-pointer-update",
+    "difficulty": "medium",
+    "buggyCode": "// node = { val, next }\nfunction hasCycle(head) {\n  let slow = head, fast = head;\n  while (fast && fast.next) {\n    slow = slow.next;\n    fast = fast.next;   // BUG: should be fast.next.next\n    if (slow === fast) return true; // slow and fast move in lockstep -> always equal\n  }\n  return false;\n}",
+    "failingInput": "acyclic list 1 -> 2 -> 3",
+    "expected": "false",
+    "actual": "true",
+    "choices": [
+      { "text": "`fast` advances by one node, the same speed as `slow`, so they stay pointer-equal every iteration and report a cycle even on an acyclic list.", "correct": true },
+      { "text": "`slow` and `fast` are both initialized to `head`, so they start equal and the very first comparison is a false positive.", "correct": false },
+      { "text": "The loop condition is missing a visited set, so each node is revisited and falsely flagged.", "correct": false },
+      { "text": "The comparison should be `slow.val === fast.val`; comparing node references is the bug.", "correct": false }
+    ],
+    "explanation": "Floyd's algorithm relies on the fast pointer moving twice as fast as the slow pointer. With `fast = fast.next` they advance in lockstep, so after each step `slow === fast` is trivially true and the function reports a cycle on a straight, acyclic list. The fix is `fast = fast.next.next`. (Note both starting at `head` is fine — the comparison happens after advancing.)"
+  },
+  {
+    "id": "dp-climb-base-case",
+    "title": "Climbing Stairs — zero base case halves every answer",
+    "patternId": "dp-1d",
+    "bugType": "wrong-base-case",
+    "difficulty": "easy",
+    "buggyCode": "function climbStairs(n) {\n  const dp = new Array(n + 1).fill(0);\n  dp[0] = 0;   // BUG: should be 1 (one way to stand at the ground)\n  if (n >= 1) dp[1] = 1;\n  for (let i = 2; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2];\n  return dp[n];\n}",
+    "failingInput": "n = 3",
+    "expected": "3",
+    "actual": "2",
+    "choices": [
+      { "text": "`dp[0]` is the count of ways to reach the ground, which must be 1; setting it to 0 drops one path from every state built on it.", "correct": true },
+      { "text": "The loop should start at `i = 1`, an off-by-one that skips a base step.", "correct": false },
+      { "text": "`dp` should be initialized to `Infinity` so unreachable states are excluded.", "correct": false },
+      { "text": "The recurrence should be `dp[i] = dp[i-1] * dp[i-2]`; using addition undercounts the paths.", "correct": false }
+    ],
+    "explanation": "There is exactly one way to be standing at step 0 (take no steps), so `dp[0]` must be 1. With `dp[0] = 0`, `dp[2] = dp[1] + dp[0] = 1` and `dp[3] = dp[2] + dp[1] = 2` instead of the correct 3. The fix is `dp[0] = 1`."
+  },
+  {
+    "id": "dp-coin-base-case",
+    "title": "Coin Change — zero-filled table reports impossible amounts as solvable",
+    "patternId": "dp-1d",
+    "bugType": "wrong-base-case",
+    "difficulty": "medium",
+    "buggyCode": "function coinChange(coins, amount) {\n  const dp = new Array(amount + 1).fill(0); // BUG: unreachable states must be Infinity\n  dp[0] = 0;\n  for (let a = 1; a <= amount; a++) {\n    for (const c of coins) {\n      if (a - c >= 0) dp[a] = Math.min(dp[a], dp[a - c] + 1);\n    }\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+    "failingInput": "coins = [2], amount = 3",
+    "expected": "-1",
+    "actual": "0",
+    "choices": [
+      { "text": "Unreachable subproblems are pre-filled with 0 instead of Infinity, so `Math.min` always prefers the bogus 0 and impossible amounts look free.", "correct": true },
+      { "text": "The inner loop has an off-by-one; `a - c >= 0` should be `a - c > 0`, dropping the exact-change case.", "correct": false },
+      { "text": "The coins array is mutated during iteration, so the denomination 2 is skipped.", "correct": false },
+      { "text": "`dp[0]` should be Infinity, not 0; the base case is inverted.", "correct": false }
+    ],
+    "explanation": "For a min-coins table, every state except `dp[0]` must start at Infinity so that `Math.min` only adopts a value when a real coin reaches it. Filled with 0, `dp[3] = min(0, dp[1] + 1) = 0` even though 3 cannot be made from 2s — so it returns 0 instead of -1. The fix is `new Array(amount + 1).fill(Infinity)` with `dp[0] = 0`."
+  },
+  {
+    "id": "freqmap-uninit",
+    "title": "Frequency Map — incrementing an undefined slot yields NaN",
+    "patternId": "frequency-map",
+    "bugType": "uninitialized-accumulator",
+    "difficulty": "easy",
+    "buggyCode": "function charCounts(s) {\n  const map = {};\n  for (const c of s) {\n    map[c] = map[c] + 1;   // BUG: map[c] is undefined the first time -> NaN\n  }\n  return map;\n}",
+    "failingInput": "s = \"aab\"",
+    "expected": "{ a: 2, b: 1 }",
+    "actual": "{ a: NaN, b: NaN }",
+    "choices": [
+      { "text": "On the first occurrence of each character `map[c]` is `undefined`, and `undefined + 1` is `NaN`, which then poisons every later increment of that key.", "correct": true },
+      { "text": "Using a plain object instead of a Map causes prototype keys to collide, producing the wrong counts.", "correct": false },
+      { "text": "The loop mutates `map` while iterating `s`, skipping the second 'a'.", "correct": false },
+      { "text": "Characters are compared by reference, so distinct 'a' characters are counted separately.", "correct": false }
+    ],
+    "explanation": "The accumulator is never seeded. The first time a character is seen, `map[c]` is `undefined`, and `undefined + 1` evaluates to `NaN`; every subsequent `NaN + 1` stays `NaN`. The fix is to default the slot: `map[c] = (map[c] ?? 0) + 1`."
+  },
+  {
+    "id": "twosum-mutate-loop",
+    "title": "Remove Value — splicing while iterating skips elements",
+    "patternId": "two-pointers",
+    "bugType": "mutation-during-iteration",
+    "difficulty": "easy",
+    "buggyCode": "// Remove every element equal to val, return the resulting array.\nfunction removeValue(nums, val) {\n  for (let i = 0; i < nums.length; i++) {\n    if (nums[i] === val) {\n      nums.splice(i, 1);   // BUG: splice shifts elements left, but i still increments\n    }\n  }\n  return nums;\n}",
+    "failingInput": "nums = [2, 2, 3], val = 2",
+    "expected": "[3]",
+    "actual": "[2, 3]",
+    "choices": [
+      { "text": "`splice` shifts every later element one index left, but `i` still advances, so the element that moved into the current slot is never examined.", "correct": true },
+      { "text": "The comparison `nums[i] === val` should be `nums[i] == val`; strict equality skips a coercible duplicate.", "correct": false },
+      { "text": "The loop bound `i < nums.length` is read once at the start, an off-by-one that stops early.", "correct": false },
+      { "text": "`splice(i, 1)` should be `splice(i, 0)`; the deletion count is wrong.", "correct": false }
+    ],
+    "explanation": "Removing index 0 shifts the second 2 into index 0, but the loop then increments to index 1, jumping past it. So one 2 survives and the result is [2, 3] instead of [3]. The fix is to decrement `i` after a splice (`i--`), iterate backward, or build a new filtered array instead of mutating during the forward scan."
+  },
+  {
+    "id": "heap-topk-compare",
+    "title": "Top-K Largest — comparator sorts the wrong direction",
+    "patternId": "heap-top-k",
+    "bugType": "wrong-comparison",
+    "difficulty": "easy",
+    "buggyCode": "// Return the k largest numbers.\nfunction kLargest(nums, k) {\n  return [...nums]\n    .sort((a, b) => a - b)   // BUG: ascending; keeps the k smallest\n    .slice(0, k);\n}",
+    "failingInput": "nums = [1, 2, 3, 4], k = 2",
+    "expected": "[4, 3]",
+    "actual": "[1, 2]",
+    "choices": [
+      { "text": "The comparator `(a, b) => a - b` sorts ascending, so `slice(0, k)` takes the k smallest values instead of the k largest.", "correct": true },
+      { "text": "`slice(0, k)` is an off-by-one; it should be `slice(0, k + 1)` to include the kth element.", "correct": false },
+      { "text": "Spreading into a new array mutates the original during the sort, corrupting the order.", "correct": false },
+      { "text": "The accumulator is uninitialized, so the first comparison reads an undefined element.", "correct": false }
+    ],
+    "explanation": "A min-heap top-k keeps the largest by evicting the smallest; the equivalent sort must be descending. `(a, b) => a - b` sorts ascending, so the first k entries are the smallest — [1, 2] instead of [4, 3]. The fix is `(a, b) => b - a` (the order within the returned k may vary, but it must contain the largest values)."
   }
 ]
