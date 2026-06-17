@@ -38,6 +38,7 @@ const links = [
   { label: 'Study Path', to: '/path' },
   { label: 'Patterns', to: '/patterns' },
   { label: 'Practice', to: '/practice' },
+  { label: 'Debug', to: '/debug' },
   { label: 'Tracker', to: '/tracker' },
 ]
 </script>
